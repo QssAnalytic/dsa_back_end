@@ -14,6 +14,13 @@ from pathlib import Path
 import os
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+
+# Superuser bilgilerini ortam değişkenlerinden alıyoruz.
+SUPERUSER_USERNAME = os.getenv('SUPERUSER_USERNAME', 'admin')  # Varsayılan: 'admin'
+SUPERUSER_EMAIL = os.getenv('SUPERUSER_EMAIL', 'admin@example.com')  # Varsayılan: 'admin@example.com'
+SUPERUSER_PASSWORD = os.getenv('SUPERUSER_PASSWORD', 'adminadmin')  # Varsayılan: 'adminpassword'
+
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
