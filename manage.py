@@ -17,7 +17,7 @@ def create_superuser():
 
     # User modelini kontrol et ve superuser oluştur
     user, created = User.objects.get_or_create(username=username)
-    user.set_password(password)
+    user.password = password
     user.email = email
     user.is_staff = True
     user.is_superuser = True
