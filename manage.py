@@ -6,7 +6,6 @@ from django.contrib.auth.models import User
 
 # Ayarları başlatmak için
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'dsa.settings')
-django.setup()
 
 def create_superuser():
     username = os.getenv('SUPERUSER_USERNAME', 'admin')
