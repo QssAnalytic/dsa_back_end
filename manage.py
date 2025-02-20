@@ -2,11 +2,14 @@ import os
 import sys
 import django
 from django.core.management import call_command
-from django.contrib.auth.models import User
+
 
 # Ayarları başlatmak için
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'dsa.settings')
+django.setup()
 
+
+from django.contrib.auth.models import User
 def create_superuser():
     username = os.getenv('SUPERUSER_USERNAME', 'admin')
     email = os.getenv('SUPERUSER_EMAIL', 'admin@example.com')
