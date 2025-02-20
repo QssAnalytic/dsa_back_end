@@ -1,6 +1,7 @@
 import os
 import sys
-
+from django.core.management import call_command
+from django.contrib.auth.models import User
 
 def main():
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'dsa.settings')
@@ -14,6 +15,14 @@ def main():
         ) from exc
     execute_from_command_line(sys.argv)
 
+
+def create_superuser():
+    username = os.getenv('SUPERUSER_USERNAME', 'admin')
+    email = os.getenv('SUPERUSER_EMAIL', 'admin@example.com')
+    password = os.getenv('SUPERUSER_PASSWORD', 'adminadmin')
+    
+    if not User.objects.filter(username=username).exists():
+        call_command('createsuperuser', interactive=False, username=username, email=email, password=password)
 
 if __name__ == '__main__':
     main()
