@@ -16,8 +16,12 @@ def create_superuser():
     password = os.getenv('SUPERUSER_PASSWORD', 'adminpassword')
 
     # User modelini kontrol et ve superuser oluştur
-    call_command('createsuperuser', interactive=False, username=username, email=email, password=password)
-
+    user, created = User.objects.get_or_create(username=username)
+    user.set_password(password)
+    user.email = email
+    user.is_staff = True
+    user.is_superuser = True
+    user.save()
 def main():
     try: # Superuser'ı oluştur
         from django.core.management import execute_from_command_line
