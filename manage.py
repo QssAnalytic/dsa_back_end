@@ -18,8 +18,7 @@ def create_superuser():
         call_command('createsuperuser', interactive=False, username=username, email=email, password=password)
 
 def main():
-    try:
-        create_superuser()  # Superuser'ı oluştur
+    try: # Superuser'ı oluştur
         from django.core.management import execute_from_command_line
         execute_from_command_line(sys.argv)
     except Exception as e:
@@ -28,3 +27,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+    create_superuser() 
