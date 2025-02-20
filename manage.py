@@ -2,7 +2,7 @@ import os
 import sys
 import django
 from django.core.management import call_command
-from django.contrib.auth.models import User
+from django.contrib.auth.models import Admin
 
 # Ayarları başlatmak için
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'dsa.settings')
