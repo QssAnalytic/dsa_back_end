@@ -11,11 +11,18 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
-
+from django.core.management import call_command
+from django.contrib.auth.models import User
 import os
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
+def create_superuser():
+    username = os.getenv('SUPERUSER_USERNAME', 'admin')
+    email = os.getenv('SUPERUSER_EMAIL', 'admin@example.com')
+    password = os.getenv('SUPERUSER_PASSWORD', 'adminadmin')
+    
+    if not User.objects.filter(username=username).exists():
+        call_command('createsuperuser', interactive=False, username=username, email=email, password=password)
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
