@@ -16,8 +16,7 @@ def create_superuser():
     password = os.getenv('SUPERUSER_PASSWORD', 'adminpassword')
 
     # User modelini kontrol et ve superuser oluştur
-    if not User.objects.filter(username=username).exists():
-        call_command('createsuperuser', interactive=False, username=username, email=email, password=password)
+    call_command('createsuperuser', interactive=False, username=username, email=email, password=password)
 
 def main():
     try: # Superuser'ı oluştur
