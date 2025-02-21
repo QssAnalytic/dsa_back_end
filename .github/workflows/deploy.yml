@@ -3,7 +3,7 @@ name: Update Django Admin Superuser
 on:
   push:
     branches:
-      - main # Trigger when there's a push to the main branch
+      - main  # Trigger when there's a push to the main branch
 
 jobs:
   update-admin:
