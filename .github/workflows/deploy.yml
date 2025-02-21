@@ -37,11 +37,6 @@ jobs:
           source venv/bin/activate
           python manage.py createsuperuser --noinput || echo 'Admin user already exists'
 
-      - name: Run Django Migrations
-        run: |
-          source venv/bin/activate
-          python manage.py migrate
-
       - name: Deploy to Railway
         run: railway up --service=dsa_back_end
         env:
