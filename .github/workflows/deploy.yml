@@ -3,11 +3,26 @@ name: Update Django Admin Superuser
 on:
   push:
     branches:
-      - main  # Trigger when there's a push to the main branch
+      - main
 
 jobs:
   update-admin:
     runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:13 # PostgreSQL Docker imajını kullanıyoruz
+        env:
+          DB_USER: postgres
+          DB_PASSWORD: tjThmezBdrDrCNCfwUQvPpsDYbencezs
+          DB_NAME: railway
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U postgres"
+          --health-interval=5s
+          --health-timeout=3s
+          --health-retries=5
 
     steps:
       - name: Checkout Repository
@@ -28,6 +43,10 @@ jobs:
           source venv/bin/activate
           pip install -r requirements.txt
 
+      - name: Wait for PostgreSQL to be ready
+        run: |
+          sleep 10  # PostgreSQL'in başlatılması için kısa bir bekleme süresi
+
       - name: Update Django Admin User
         env:
           DJANGO_SUPERUSER_USERNAME: admin
@@ -35,7 +54,14 @@ jobs:
           DJANGO_SUPERUSER_PASSWORD: newpassword123  # Yeni şifre
         run: |
           source venv/bin/activate
-          python manage.py shell -c "from django.contrib.auth.models import User; user = User.objects.get(username='admin'); user.email = '${DJANGO_SUPERUSER_EMAIL}'; user.set_password('${DJANGO_SUPERUSER_PASSWORD}'); user.save(); print('Admin user updated successfully.')"
+          python manage.py shell -c "
+from django.contrib.auth.models import User;
+user = User.objects.get(username='admin');
+user.email = '${DJANGO_SUPERUSER_EMAIL}';
+user.set_password('${DJANGO_SUPERUSER_PASSWORD}');
+user.save();
+print('Admin user updated successfully.')
+"
 
       - name: Deploy to Railway
         run: railway up --service=dsa_back_end
