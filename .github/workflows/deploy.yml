@@ -33,7 +33,11 @@ jobs:
           DJANGO_SUPERUSER_EMAIL: admin@dsa.az
           DJANGO_SUPERUSER_PASSWORD: admin123
         run: |
-          bash -c "source venv/bin/activate && python dsa/manage.py createsuperuser --noinput || echo 'Admin user already exists'"
+          bash -c "source venv/bin/activate && python manage.py createsuperuser --noinput || echo 'Admin user already exists'"
+
+      - name: Install Railway CLI
+        run: |
+          npm install -g @railway/cli
 
       - name: Deploy to Railway
         run: npx railway up --service=dsa_back_end
