@@ -1,4 +1,4 @@
-name: Deploy to Railway
+name: Update Django Admin Superuser
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
       - main # Trigger when there's a push to the main branch
 
 jobs:
-  deploy:
+  update-admin:
     runs-on: ubuntu-latest
 
     steps:
@@ -28,18 +28,21 @@ jobs:
           source venv/bin/activate
           pip install -r requirements.txt
 
-      - name: Create Django Admin User
+      - name: Update Django Admin User
         env:
           DJANGO_SUPERUSER_USERNAME: admin
-          DJANGO_SUPERUSER_EMAIL: admin@dsa.az
-          DJANGO_SUPERUSER_PASSWORD: admin123
+          DJANGO_SUPERUSER_EMAIL: newadmin@dsa.az  # Yeni e-posta
+          DJANGO_SUPERUSER_PASSWORD: newpassword123  # Yeni şifre
         run: |
           source venv/bin/activate
-          python manage.py createsuperuser --noinput || echo 'Admin user already exists'
-
-      - name: Install Railway CLI
-        run: |
-          curl -fsSL https://railway.app/install.sh | bash
+          python manage.py shell -c "
+from django.contrib.auth.models import User;
+user = User.objects.get(username='admin');  # Eski admin kullanıcı adı
+user.email = '${DJANGO_SUPERUSER_EMAIL}';  # Yeni e-posta
+user.set_password('${DJANGO_SUPERUSER_PASSWORD}');  # Yeni şifre
+user.save();
+print('Admin user updated successfully.')
+"
 
       - name: Deploy to Railway
         run: railway up --service=dsa_back_end
