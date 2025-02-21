@@ -21,25 +21,28 @@ jobs:
       - name: Create and Activate Virtual Environment
         run: |
           python3 -m venv venv
-          bash -c "source venv/bin/activate"
+          source venv/bin/activate
 
       - name: Install Dependencies
         run: |
-          bash -c "source venv/bin/activate && pip install -r requirements.txt"
+          source venv/bin/activate
+          pip install -r requirements.txt
 
       - name: Create Django Admin User
         env:
-          DJANGO_SUPERUSER_USERNAME: admin
+          DJANGO_SUPERUSER_USERNAME: dsa
           DJANGO_SUPERUSER_EMAIL: admin@dsa.az
           DJANGO_SUPERUSER_PASSWORD: admin123
         run: |
-          bash -c "source venv/bin/activate && python manage.py createsuperuser --noinput || echo 'Admin user already exists'"
+          source venv/bin/activate
+          python manage.py createsuperuser --noinput || echo 'Admin user already exists'
 
-      - name: Install Railway CLI
+      - name: Run Django Migrations
         run: |
-          npm install -g @railway/cli
+          source venv/bin/activate
+          python manage.py migrate
 
       - name: Deploy to Railway
-        run: npx railway up --service=dsa_back_end
+        run: railway up --service=dsa_back_end
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
