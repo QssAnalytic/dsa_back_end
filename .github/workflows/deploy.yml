@@ -35,14 +35,7 @@ jobs:
           DJANGO_SUPERUSER_PASSWORD: newpassword123  # Yeni şifre
         run: |
           source venv/bin/activate
-          python manage.py shell -c "
-from django.contrib.auth.models import User;
-user = User.objects.get(username='admin');  # Eski admin kullanıcı adı
-user.email = '${DJANGO_SUPERUSER_EMAIL}';  # Yeni e-posta
-user.set_password('${DJANGO_SUPERUSER_PASSWORD}');  # Yeni şifre
-user.save();
-print('Admin user updated successfully.')
-"
+          python manage.py shell -c "from django.contrib.auth.models import User; user = User.objects.get(username='admin'); user.email = '${DJANGO_SUPERUSER_EMAIL}'; user.set_password('${DJANGO_SUPERUSER_PASSWORD}'); user.save(); print('Admin user updated successfully.')"
 
       - name: Deploy to Railway
         run: railway up --service=dsa_back_end
