@@ -1,0 +1,53 @@
+name: Deploy to Railway
+
+on:
+  push:
+    branches:
+      - main # Main branch-ə push ediləndə işləsin
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Reposu klonla
+        uses: actions/checkout@v3
+
+      - name: Python və pip quraşdır
+        run: |
+          sudo apt update
+          sudo apt install python3 python3-pip -y
+
+      - name: Virtual env yarat və aktiv et
+        run: |
+          python3 -m venv venv
+          source venv/bin/activate
+
+      - name: Bağımlılıqları yüklə
+        run: |
+          source venv/bin/activate
+          pip install -r requirements.txt
+
+      - name: Django üçün DB miqrasiya et
+        run: |
+          source venv/bin/activate
+          python manage.py migrate
+
+      - name: Django Admin İstifadəçisini Yarat
+        env:
+          DJANGO_SUPERUSER_USERNAME: admin
+          DJANGO_SUPERUSER_EMAIL: admin@dsa.az
+          DJANGO_SUPERUSER_PASSWORD: admin123
+        run: |
+          source venv/bin/activate
+          python manage.py createsuperuser --noinput || echo "Admin artıq mövcuddur"
+
+      - name: Testləri işə sal (İstəyə bağlı)
+        run: |
+          source venv/bin/activate
+          python manage.py test || echo "Testlər uğursuz oldu, davam edilir"
+
+      - name: Railway-ə Deploy Et
+        run: npx railway up --service=dsa_back_end
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
