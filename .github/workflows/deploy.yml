@@ -21,15 +21,11 @@ jobs:
       - name: Create and Activate Virtual Environment
         run: |
           python3 -m venv venv
-          echo "source $(pwd)/venv/bin/activate" >> $GITHUB_ENV
+          bash -c "source venv/bin/activate"
 
       - name: Install Dependencies
         run: |
-          pip install -r requirements.txt
-
-      - name: Run Django Migrations
-        run: |
-          python manage.py migrate
+          bash -c "source venv/bin/activate && pip install -r requirements.txt"
 
       - name: Create Django Admin User
         env:
@@ -37,11 +33,7 @@ jobs:
           DJANGO_SUPERUSER_EMAIL: admin@dsa.az
           DJANGO_SUPERUSER_PASSWORD: admin123
         run: |
-          python manage.py createsuperuser --noinput || echo "Admin already exists"
-
-      - name: Run Tests (Optional)
-        run: |
-          python manage.py test || echo "Tests failed, continuing with deployment"
+          bash -c "source venv/bin/activate && python dsa/manage.py createsuperuser --noinput || echo 'Admin user already exists'"
 
       - name: Deploy to Railway
         run: npx railway up --service=dsa_back_end
