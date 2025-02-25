@@ -18,10 +18,13 @@ from .models import (
 
 class TəlimlərSerializer(serializers.ModelSerializer):
     money = serializers.SerializerMethodField()
-
+    metinler_ids = serializers.SerializerMethodField()
     class Meta:
         model = Təlimlər
-        fields = '__all__'  
+        fields = ['id', 'bootcamp_tipi', 'is_active', 'order', 'title', 'created_at', 'updated_at', 'money', 'metinler_ids']
+
+    def get_metinler_ids(self, obj):
+        return obj.metinler_ids
 
     def get_money(self, obj):
         metinler = Mətinlər.objects.filter(trainings=obj)
@@ -29,6 +32,8 @@ class TəlimlərSerializer(serializers.ModelSerializer):
         if metinler.exists():
             return min(metinler.values_list('money', flat=True)) 
         return None
+
+
 
 
 class BootcampTipiSerializer(serializers.ModelSerializer):
