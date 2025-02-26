@@ -92,16 +92,15 @@ class Təlimlər(models.Model):
     title = models.TextField(max_length=100)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    
-    # Many-to-many relationship with Mətinlər
-    metinler = models.ManyToManyField('Mətinlər', related_name='telimler_metinler', blank=True)
+    metinler = models.ForeignKey('Mətinlər', on_delete=models.CASCADE, related_name='telimler_metinler', blank=True, null=True)
 
     def __str__(self):
         return self.title
     
     @property
     def metinler_ids(self):
-        return list(self.metinler.values_list('id', flat=True))
+        return [self.metinler.id] if self.metinler else []
+
     
     
     
