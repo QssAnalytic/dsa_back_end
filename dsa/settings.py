@@ -17,7 +17,7 @@ ALLOWED_HOSTS = ['dsabackend-production-00f4.up.railway.app']
 # Trusted origins for CSRF (important for POST requests or forms)
 CSRF_TRUSTED_ORIGINS = [
     "https://dsabackend-production-00f4.up.railway.app",
-    "https://dsa-eta-ruddy.vercel.app",  # Add your frontend domain
+    "https://dsafrontend-production.up.railway.app/",  # Add your frontend domain
     "https://dsaadmin-production.up.railway.app",  # Add the admin domain (if applicable)
 ]
 
@@ -50,9 +50,9 @@ MIDDLEWARE = [
 # CORS settings
 CORS_ALLOW_ALL_ORIGINS = False  # Don't allow all origins
 CORS_ALLOWED_ORIGINS = [
-    "https://dsa-eta-ruddy.vercel.app",  # Your frontend domain
-    "https://dsaadmin-production.up.railway.app",  # Fixed: Added scheme
-    "http://localhost:3000",  # Optional: For local development
+    "https://dsafrontend-production.up.railway.app/",
+    "https://dsaadmin-production.up.railway.app",
+    "http://localhost:3000",
 ]
 
 # Allow specific HTTP methods for CORS requests
