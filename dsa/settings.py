@@ -53,7 +53,8 @@ MIDDLEWARE = [
 # CORS ayarları
 CORS_ALLOW_ALL_ORIGINS = False  # Tüm kökenlere izin vermiyoruz
 CORS_ALLOWED_ORIGINS = [
-    "https://dsa-eta-ruddy.vercel.app",  # Frontend'inizin kökenini ekleyin
+    "https://dsa-eta-ruddy.vercel.app",
+    "dsaadmin-production.up.railway.app"
 ]
 
 ROOT_URLCONF = 'dsa.urls'
