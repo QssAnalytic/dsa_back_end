@@ -13,34 +13,33 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 from pathlib import Path
 import os
 import dj_database_url
+
+# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Database configuration
 DATABASES = {
     'default': dj_database_url.config(default=os.getenv("DATABASE_URL"))
 }
 
+# Superuser credentials from environment variables
+SUPERUSER_USERNAME = os.getenv('SUPERUSER_USERNAME', 'admin')  # Default: 'admin'
+SUPERUSER_EMAIL = os.getenv('SUPERUSER_EMAIL', 'admin@example.com')  # Default: 'admin@example.com'
+SUPERUSER_PASSWORD = os.getenv('SUPERUSER_PASSWORD', 'adminadmin')  # Default: 'adminpassword'
 
-# Superuser bilgilerini ortam değişkenlerinden alıyoruz.
-SUPERUSER_USERNAME = os.getenv('SUPERUSER_USERNAME', 'admin')  # Varsayılan: 'admin'
-SUPERUSER_EMAIL = os.getenv('SUPERUSER_EMAIL', 'admin@example.com')  # Varsayılan: 'admin@example.com'
-SUPERUSER_PASSWORD = os.getenv('SUPERUSER_PASSWORD', 'adminadmin')  # Varsayılan: 'adminpassword'
-
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
+# Security settings
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# Production settings
+DEBUG = False  # Changed to False for production security
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['dsabackend-production-00f4.up.railway.app']  # Specific host for security
 
 CSRF_TRUSTED_ORIGINS = [
-    "https://dsabackend-production-00f4.up.railway.app"]
-# Application definition
+    "https://dsabackend-production-00f4.up.railway.app"
+]
 
+# Application definition
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -64,16 +63,15 @@ MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
 ]
 
-
-
-CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_ALL_ORIGINS = False  # Set to False for security, use CORS_ALLOWED_ORIGINS instead if needed
+# CORS_ALLOWED_ORIGINS = ['https://dsabackend-production-00f4.up.railway.app']  # Uncomment and configure if specific origins are needed
 
 ROOT_URLCONF = 'dsa.urls'
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],  # Burada template dizini eklenebilir
+        'DIRS': [],  # Add template directories if needed
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -88,20 +86,12 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'dsa.wsgi.application'
 
-
 # Database
-# https://docs.djangoproject.com/en/5.1/ref/settings/#databases
-
-
-
 DATABASES = {
     'default': dj_database_url.config(default=os.getenv("DATABASE_URL"))
 }
 
-
 # Password validation
-# https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
-
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -117,10 +107,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
-# https://docs.djangoproject.com/en/5.1/topics/i18n/
-
 LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
@@ -129,16 +116,13 @@ USE_I18N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.1/howto/static-files/
+STATIC_URL = 'static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # For collectstatic
 
-STATIC_URL = 'static/'  # Statik dosyaların yolu
+# Media files (for Railway volume)
+MEDIA_URL = '/media/'
+MEDIA_ROOT = '/app/media'  # Updated to match the mounted volume path
 
 # Default primary key field type
-# https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
-
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
