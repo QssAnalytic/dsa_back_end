@@ -1,7 +1,26 @@
 from django.db import models
+import unicodedata
+import re
 
+# Dosya adlarını temizlemek için yardımcı fonksiyon
+def clean_filename(filename):
+    # Özel karakterleri kaldır ve boşlukları _ ile değiştir
+    filename = unicodedata.normalize('NFKD', filename).encode('ASCII', 'ignore').decode('ASCII')
+    filename = re.sub(r'[^a-zA-Z0-9._-]', '_', filename)
+    return filename
 
+# Dosya yükleme yolunu dinamik olarak oluşturmak için yardımcı fonksiyonlar
+def upload_to_trainers(instance, filename):
+    return f"trainers/{clean_filename(filename)}"
 
+def upload_to_graduates(instance, filename):
+    return f"graduates/{clean_filename(filename)}"
+
+def upload_to_metinler(instance, filename):
+    return f"metinler/{clean_filename(filename)}"
+
+def upload_to_certificates(instance, filename):
+    return f"certificates/{clean_filename(filename)}"
 
 class Müraciət(models.Model):
     name = models.CharField(max_length=100)
@@ -38,8 +57,7 @@ class Əlaqə(models.Model):
     def __str__(self):
         return f'{self.name} {self.surname} - {self.category}'
 
-    
-    
+
 class Qeydiyyat(models.Model):
     full_name = models.CharField(max_length=100)
     email = models.EmailField()
@@ -51,11 +69,7 @@ class Qeydiyyat(models.Model):
     def __str__(self):
         return self.email
 
-## Models for Data Science Bootcamp--------------------------------------------------------------------------------------------------
- 
- 
- 
- 
+
 class Bootcamps(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=100)
@@ -63,6 +77,7 @@ class Bootcamps(models.Model):
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
     class Meta:
         db_table = 'main_bootcamps'
 
@@ -80,10 +95,8 @@ class BootcampTipi(models.Model):
 
     def __str__(self):
         return self.name
-    
-    
-    
-    
+
+
 class Təlimlər(models.Model):
     id = models.AutoField(primary_key=True)
     bootcamp_tipi = models.ForeignKey(BootcampTipi, on_delete=models.CASCADE, related_name='telimler')
@@ -101,11 +114,7 @@ class Təlimlər(models.Model):
     def metinler_ids(self):
         return [self.metinler.id] if self.metinler else []
 
-    
-    
-    
-   
-    
+
 class Mətinlər(models.Model):
     id = models.AutoField(primary_key=True)
     trainings = models.ForeignKey(Təlimlər, on_delete=models.CASCADE, related_name='metinler_trainings')
@@ -113,20 +122,20 @@ class Mətinlər(models.Model):
     description = models.TextField()
     information = models.TextField()
     money = models.IntegerField()
-    image = models.ImageField(upload_to='mətinlər/')
+    image = models.ImageField(upload_to=upload_to_metinler)  # mətinlər yerine metinler kullanıyoruz
     for_who = models.TextField()
     certificates = models.TextField()
-    certificate_image = models.ImageField(upload_to='certificates/')
+    certificate_image = models.ImageField(upload_to=upload_to_certificates)
     
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    
 
     def __str__(self):
         return self.title
 
+
 class Sessiyalar(models.Model):
-    metinler = models.ForeignKey(Mətinlər, on_delete=models.CASCADE, related_name='sessiyalar',default=1)
+    metinler = models.ForeignKey(Mətinlər, on_delete=models.CASCADE, related_name='sessiyalar', default=1)
     session_number = models.IntegerField()
     date = models.DateField()
     hour = models.TimeField()
@@ -135,7 +144,7 @@ class Sessiyalar(models.Model):
 
     def __str__(self):
         return f'{self.session_number} - {self.date} - {self.hour}'
-    
+
 
 class Nümayişlər(models.Model):
     metinler = models.OneToOneField(Mətinlər, on_delete=models.CASCADE, related_name='nümayislər')
@@ -148,27 +157,27 @@ class Nümayişlər(models.Model):
 
     def __str__(self):
         return self.title
-    
+
 
 class Sillabuslar(models.Model):
     metinler = models.ForeignKey(Mətinlər, on_delete=models.CASCADE, related_name='syllabus', default=1)
     title = models.CharField(max_length=100)
     description = models.TextField()
-    label = models.CharField(max_length=100,null=True)
+    label = models.CharField(max_length=100, null=True)
     information = models.TextField(max_length=200)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.title
-    
-    
+
+
 class Təlimçilər(models.Model):
     metinler = models.ForeignKey(Mətinlər, on_delete=models.CASCADE, related_name='trainers', default=1)
     info = models.TextField()
     name = models.CharField(max_length=100)
     work_location = models.CharField(max_length=100)
-    image = models.ImageField(upload_to='trainers/')
+    image = models.ImageField(upload_to=upload_to_trainers)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -176,33 +185,31 @@ class Təlimçilər(models.Model):
         return f'{self.name}'
 
 
-    
 class Müəllimlər(models.Model):
     info = models.TextField()
     name = models.CharField(max_length=100)
     work_position = models.CharField(max_length=100)
     work_location = models.CharField(max_length=100)
-    image = models.ImageField(upload_to='trainers/')
+    image = models.ImageField(upload_to=upload_to_trainers)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return f'{self.name}'
-    
-    
+
+
 class Məzunlar(models.Model):
     name = models.CharField(max_length=100)
     work_position = models.CharField(max_length=100)
     work_location = models.CharField(max_length=100)
-    image = models.ImageField(upload_to='trainers/')
+    image = models.ImageField(upload_to=upload_to_graduates)  # trainers yerine graduates kullanıyoruz
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return f'{self.name}'
-    
-    
-    
+
+
 class FAQ(models.Model):
     question = models.TextField()
     answer = models.TextField()
