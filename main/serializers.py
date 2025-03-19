@@ -19,6 +19,7 @@ from .models import (
 class TəlimlərSerializer(serializers.ModelSerializer):
     money = serializers.SerializerMethodField()
     metinler_ids = serializers.SerializerMethodField()
+
     class Meta:
         model = Təlimlər
         fields = ['id', 'bootcamp_tipi', 'is_active', 'order', 'title', 'created_at', 'updated_at', 'money', 'metinler_ids']
@@ -28,13 +29,7 @@ class TəlimlərSerializer(serializers.ModelSerializer):
 
     def get_money(self, obj):
         metinler = Mətinlər.objects.filter(trainings=obj)
-
-        if metinler.exists():
-            return min(metinler.values_list('money', flat=True)) 
-        return None
-
-
-
+        return min(metinler.values_list('money', flat=True)) if metinler.exists() else None
 
 class BootcampTipiSerializer(serializers.ModelSerializer):
     telimler = TəlimlərSerializer(many=True, read_only=True) 
@@ -64,7 +59,6 @@ class QeydiyyatSerializer(serializers.ModelSerializer):
     class Meta:
         model = Qeydiyyat
         fields = '__all__'
-
 
 class SessiyalarSerializer(serializers.ModelSerializer):
     class Meta:
@@ -101,12 +95,12 @@ class FAQSerializer(serializers.ModelSerializer):
         model = FAQ
         fields = '__all__'
 
-
 class MətinlərSerializer(serializers.ModelSerializer):
     sessiyalar = SessiyalarSerializer(many=True, read_only=True)  
-    nümayislər = NümayişlərSerializer( read_only=True)
+    nümayislər = NümayişlərSerializer(read_only=True)
     syllabus = SillabuslarSerializer(many=True, read_only=True)
     trainers = TəlimçilərSerializer(many=True, read_only=True)
+    image = serializers.ImageField(use_url=True)  # AWS S3 için
 
     class Meta:
         model = Mətinlər
