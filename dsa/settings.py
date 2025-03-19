@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     'main',  # Your app
     'corsheaders',  # For handling CORS
     'rest_framework',  # For Django REST Framework
+    'storages',  # AWS S3 için django-storages eklendi
 ]
 
 # Middleware configuration
@@ -105,7 +106,6 @@ TEMPLATES = [
 WSGI_APPLICATION = 'dsa.wsgi.application'
 
 # Database configuration (using Railway's DATABASE_URL)
-# Removed duplicate DATABASES definition
 DATABASES = {
     'default': dj_database_url.config(default=os.getenv("DATABASE_URL"))
 }
@@ -141,9 +141,21 @@ USE_TZ = True
 STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-# Media files (uploads)
-MEDIA_URL = '/media/'
-MEDIA_ROOT = '/app/media'
+# Media files (uploads) - Artık S3 kullanılacak, bu yüzden MEDIA_ROOT kaldırıldı
+MEDIA_URL = 'https://dsa-media-img.s3.amazonaws.com/'  # S3 bucket URL'niz
+
+# AWS S3 Ayarları
+AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
+AWS_STORAGE_BUCKET_NAME = 'dsa-media-img'
+AWS_S3_REGION_NAME = 'eu-north-1'
+AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com'
+
+# Medya dosyaları için S3'ü varsayılan depolama yapın
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+
+# İsteğe bağlı: Dosyaların üzerine yazılmasını engellemek için
+AWS_S3_FILE_OVERWRITE = False
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
