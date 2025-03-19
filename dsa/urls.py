@@ -15,12 +15,24 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
-from django.urls import include
+from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('main.urls')),  # Bunu ekle
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    path('', include('main.urls')),  # Routes to your main app's URLs
+]
+
+# Serve static and media files during development or testing
+if settings.DEBUG:
+    # Serve static files (e.g., CSS, JS, images in static folder)
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    # Serve media files (e.g., user-uploaded images)
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+else:
+    # In production, static/media serving should be handled by the web server,
+    # not Django. This is just a fallback for testing with DEBUG=False locally.
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    print("Warning: Serving static/media files directly in production is not recommended.")
