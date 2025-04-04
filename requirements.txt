@@ -10,8 +10,7 @@ djangorestframework==3.15.2
 environ==1.0
 jmespath==1.0.1
 pillow==11.1.0
-psycopg2==2.9.10
-psycopg2-binary==2.9.10
+psycopg2-binary
 python-dateutil==2.9.0.post0
 s3transfer==0.11.2
 six==1.17.0
