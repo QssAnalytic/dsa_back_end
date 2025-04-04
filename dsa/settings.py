@@ -146,6 +146,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # Media files (uploads) - Artık S3 kullanılacak, bu yüzden MEDIA_ROOT kaldırıldı
 MEDIA_URL = 'https://dsa-media-img.s3.amazonaws.com/'  # S3 bucket URL'niz
+MEDIA_ROOT = ''
 
 # AWS S3 Ayarları
 AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')
