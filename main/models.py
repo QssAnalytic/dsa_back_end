@@ -1,15 +1,14 @@
+# models.py (Düzeltildi)
 from django.db import models
+from storages.backends.s3boto3 import S3Boto3Storage
 import unicodedata
 import re
 
-# Dosya adlarını temizlemek için yardımcı fonksiyon
 def clean_filename(filename):
-    # Özel karakterleri kaldır ve boşlukları _ ile değiştir
-    filename = unicodedata.normalize('NFKD', filename).encode('ASCII', 'ignore').decode('ASCII')
-    filename = re.sub(r'[^a-zA-Z0-9._-]', '_', filename)
-    return filename
+    filename = unicodedata.normalize('NFKD', filename)
+    filename = re.sub(r'[<>:"/\\|?*]', '_', filename)
+    return filename.strip()
 
-# Dosya yükleme yolunu dinamik olarak oluşturmak için yardımcı fonksiyonlar
 def upload_to_trainers(instance, filename):
     return f"trainers/{clean_filename(filename)}"
 
@@ -33,7 +32,6 @@ class Müraciət(models.Model):
     def __str__(self):
         return f'{self.name} {self.surname}'
 
-
 class Əlaqə(models.Model):
     CATEGORY_CHOICES = [
         ('Data Science Bootcamp', 'Data Science Bootcamp'),
@@ -44,7 +42,6 @@ class Əlaqə(models.Model):
         ('Ödənişli proyekt köməyi', 'Ödənişli proyekt köməyi'),
         ('Ödənişsiz proyekt köməyi', 'Ödənişsiz proyekt köməyi')
     ]
-    
     name = models.CharField(max_length=100)
     surname = models.CharField(max_length=100)
     email = models.EmailField()
@@ -57,7 +54,6 @@ class Əlaqə(models.Model):
     def __str__(self):
         return f'{self.name} {self.surname} - {self.category}'
 
-
 class Qeydiyyat(models.Model):
     full_name = models.CharField(max_length=100)
     email = models.EmailField()
@@ -68,7 +64,6 @@ class Qeydiyyat(models.Model):
 
     def __str__(self):
         return self.email
-
 
 class Bootcamps(models.Model):
     id = models.AutoField(primary_key=True)
@@ -84,7 +79,6 @@ class Bootcamps(models.Model):
     def __str__(self):
         return self.name
 
-
 class BootcampTipi(models.Model):
     bootcamp = models.ForeignKey(Bootcamps, on_delete=models.CASCADE, related_name='bootcamp_tipi')
     name = models.CharField(max_length=100)
@@ -96,7 +90,6 @@ class BootcampTipi(models.Model):
     def __str__(self):
         return self.name
 
-
 class Təlimlər(models.Model):
     id = models.AutoField(primary_key=True)
     bootcamp_tipi = models.ForeignKey(BootcampTipi, on_delete=models.CASCADE, related_name='telimler')
@@ -105,15 +98,9 @@ class Təlimlər(models.Model):
     title = models.TextField(max_length=100)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    metinler = models.ForeignKey('Mətinlər', on_delete=models.CASCADE, related_name='telimler_metinler', blank=True, null=True)
 
     def __str__(self):
         return self.title
-    
-    @property
-    def metinler_ids(self):
-        return [self.metinler.id] if self.metinler else []
-
 
 class Mətinlər(models.Model):
     id = models.AutoField(primary_key=True)
@@ -122,17 +109,15 @@ class Mətinlər(models.Model):
     description = models.TextField()
     information = models.TextField()
     money = models.IntegerField()
-    image = models.ImageField(upload_to=upload_to_metinler)  # mətinlər yerine metinler kullanıyoruz
+    image = models.ImageField(upload_to=upload_to_metinler, storage=S3Boto3Storage())  # S3'e yönlendirildi
     for_who = models.TextField()
     certificates = models.TextField()
-    certificate_image = models.ImageField(upload_to=upload_to_certificates)
-    
+    certificate_image = models.ImageField(upload_to=upload_to_certificates, storage=S3Boto3Storage())  # S3'e yönlendirildi
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.title
-
 
 class Sessiyalar(models.Model):
     metinler = models.ForeignKey(Mətinlər, on_delete=models.CASCADE, related_name='sessiyalar', default=1)
@@ -144,7 +129,6 @@ class Sessiyalar(models.Model):
 
     def __str__(self):
         return f'{self.session_number} - {self.date} - {self.hour}'
-
 
 class Nümayişlər(models.Model):
     metinler = models.OneToOneField(Mətinlər, on_delete=models.CASCADE, related_name='nümayislər')
@@ -158,7 +142,6 @@ class Nümayişlər(models.Model):
     def __str__(self):
         return self.title
 
-
 class Sillabuslar(models.Model):
     metinler = models.ForeignKey(Mətinlər, on_delete=models.CASCADE, related_name='syllabus', default=1)
     title = models.CharField(max_length=100)
@@ -171,44 +154,40 @@ class Sillabuslar(models.Model):
     def __str__(self):
         return self.title
 
-
 class Təlimçilər(models.Model):
-    metinler = models.ForeignKey(Mətinlər, on_delete=models.CASCADE, related_name='trainers', default=1)
+    metinler = models.ManyToManyField(Mətinlər, related_name='trainers')
     info = models.TextField()
     name = models.CharField(max_length=100)
     work_location = models.CharField(max_length=100)
-    image = models.ImageField(upload_to=upload_to_trainers)
+    image = models.ImageField(upload_to=upload_to_trainers, storage=S3Boto3Storage())  # S3'e yönlendirildi
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return f'{self.name}'
-
 
 class Müəllimlər(models.Model):
     info = models.TextField()
     name = models.CharField(max_length=100)
     work_position = models.CharField(max_length=100)
     work_location = models.CharField(max_length=100)
-    image = models.ImageField(upload_to=upload_to_trainers)
+    image = models.ImageField(upload_to=upload_to_trainers, storage=S3Boto3Storage())  # S3'e yönlendirildi
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return f'{self.name}'
-
 
 class Məzunlar(models.Model):
     name = models.CharField(max_length=100)
     work_position = models.CharField(max_length=100)
     work_location = models.CharField(max_length=100)
-    image = models.ImageField(upload_to=upload_to_graduates)  # trainers yerine graduates kullanıyoruz
+    image = models.ImageField(upload_to=upload_to_graduates, storage=S3Boto3Storage())  # S3'e yönlendirildi
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return f'{self.name}'
-
 
 class FAQ(models.Model):
     question = models.TextField()
