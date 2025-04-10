@@ -41,6 +41,11 @@ class Migration(migrations.Migration):
             field=models.ImageField(storage=storages.backends.s3.S3Storage(), upload_to=main.models.upload_to_graduates),
         ),
         migrations.AlterField(
+        model_name='müəllimlər',
+        name='image',
+        field=models.ImageField(...),
+    ),
+        migrations.AlterField(
             model_name='təlimçilər',
             name='image',
             field=models.ImageField(storage=storages.backends.s3.S3Storage(), upload_to=main.models.upload_to_trainers),

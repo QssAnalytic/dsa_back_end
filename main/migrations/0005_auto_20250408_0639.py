@@ -3,7 +3,7 @@ from django.db import migrations
 
 def forwards_func(apps, schema_editor):
     # Eski modeli al
-    Təlimçilər = apps.get_model('your_app_name', 'Təlimçilər')
+    Təlimçilər = apps.get_model('main', 'Təlimçilər')
     # Tüm təlimçileri döngüye al
     for təlimçi in Təlimçilər.objects.all():
         if təlimçi.metinler:  # Eğer ForeignKey doluysa
