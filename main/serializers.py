@@ -1,19 +1,7 @@
 from rest_framework import serializers
 from .models import (
-    Müraciət,
-    Əlaqə,
-    Qeydiyyat,
-    Bootcamps,
-    BootcampTipi,
-    Təlimlər,
-    Mətinlər,
-    Sessiyalar,
-    Nümayişlər,
-    Sillabuslar,
-    Təlimçilər,
-    Müəllimlər,
-    Məzunlar,
-    FAQ
+    Müraciət, Əlaqə, Qeydiyyat, Bootcamps, BootcampTipi, Təlimlər, Mətinlər,
+    Sessiyalar, Nümayişlər, Sillabuslar, Təlimçilər, Müəllimlər, Məzunlar, FAQ
 )
 
 class TəlimlərSerializer(serializers.ModelSerializer):
@@ -25,21 +13,22 @@ class TəlimlərSerializer(serializers.ModelSerializer):
         fields = ['id', 'bootcamp_tipi', 'is_active', 'order', 'title', 'created_at', 'updated_at', 'money', 'metinler_ids']
 
     def get_metinler_ids(self, obj):
-        return obj.metinler_ids
+        # İlişkili Mətinlər ID'lerini döndür
+        return list(obj.metinler_trainings.values_list('id', flat=True))
 
     def get_money(self, obj):
         metinler = Mətinlər.objects.filter(trainings=obj)
         return min(metinler.values_list('money', flat=True)) if metinler.exists() else None
 
 class BootcampTipiSerializer(serializers.ModelSerializer):
-    telimler = TəlimlərSerializer(many=True, read_only=True) 
+    telimler = TəlimlərSerializer(many=True, read_only=True)
 
     class Meta:
         model = BootcampTipi
         fields = '__all__'
 
 class BootcampsSerializer(serializers.ModelSerializer):
-    bootcamp_tipi = BootcampTipiSerializer(many=True, read_only=True)  
+    bootcamp_tipi = BootcampTipiSerializer(many=True, read_only=True)
 
     class Meta:
         model = Bootcamps
@@ -76,16 +65,22 @@ class SillabuslarSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class TəlimçilərSerializer(serializers.ModelSerializer):
+    image = serializers.ImageField(use_url=True)  # S3 URL desteği
+
     class Meta:
         model = Təlimçilər
         fields = '__all__'
 
 class MüəllimlərSerializer(serializers.ModelSerializer):
+    image = serializers.ImageField(use_url=True)  # S3 URL desteği
+
     class Meta:
         model = Müəllimlər
         fields = '__all__'
 
 class MəzunlarSerializer(serializers.ModelSerializer):
+    image = serializers.ImageField(use_url=True)  # S3 URL desteği
+
     class Meta:
         model = Məzunlar
         fields = '__all__'
@@ -96,11 +91,12 @@ class FAQSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class MətinlərSerializer(serializers.ModelSerializer):
-    sessiyalar = SessiyalarSerializer(many=True, read_only=True)  
+    sessiyalar = SessiyalarSerializer(many=True, read_only=True)
     nümayislər = NümayişlərSerializer(read_only=True)
     syllabus = SillabuslarSerializer(many=True, read_only=True)
     trainers = TəlimçilərSerializer(many=True, read_only=True)
-    image = serializers.ImageField(use_url=True)  # AWS S3 için
+    image = serializers.ImageField(use_url=True)
+    certificate_image = serializers.ImageField(use_url=True)
 
     class Meta:
         model = Mətinlər
