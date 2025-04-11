@@ -99,10 +99,15 @@ class MətinlərSerializer(serializers.ModelSerializer):
     sessiyalar = SessiyalarSerializer(many=True, read_only=True)
     nümayislər = NümayişlərSerializer(read_only=True)
     syllabus = SillabuslarSerializer(many=True, read_only=True)
-    trainers = TəlimçilərSerializer(many=True, read_only=True)
+    trainers = serializers.SerializerMethodField()
     image = serializers.ImageField(use_url=True)
     certificate_image = serializers.ImageField(use_url=True)
 
     class Meta:
         model = Mətinlər
         fields = '__all__'
+
+    def get_trainers(self, obj):
+        trainers = obj.trainers.all()
+        unique_trainers = {trainer.name: trainer for trainer in trainers}
+        return TəlimçilərSerializer(unique_trainers.values(), many=True).data
