@@ -65,7 +65,12 @@ class SillabuslarSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class TəlimçilərSerializer(serializers.ModelSerializer):
-    image = serializers.ImageField(use_url=True)  # S3 URL desteği
+    image = serializers.ImageField(use_url=True)
+    metinler = serializers.PrimaryKeyRelatedField(
+        many=True,
+        queryset=Mətinlər.objects.all(),
+        required=False
+    )
 
     class Meta:
         model = Təlimçilər

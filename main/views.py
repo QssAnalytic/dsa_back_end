@@ -82,19 +82,34 @@ class TəlimçilərViewSet(viewsets.ModelViewSet):
     queryset = Təlimçilər.objects.all()
     serializer_class = TəlimçilərSerializer
 
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        try:
+            instance = serializer.save()
+            if 'metinler' in request.data:
+                metinler_ids = request.data.getlist('metinler')  # Birden fazla ID için
+                instance.metinler.set(metinler_ids)
+            if 'image' in request.FILES:
+                instance.image = request.FILES['image']
+                instance.save()
+        except Exception as e:
+            raise ValidationError(f"Oluşturma hatası: {str(e)}")
+        return Response(serializer.data, status=201)
+
     def update(self, request, *args, **kwargs):
         instance = self.get_object()
         serializer = self.get_serializer(instance, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
-
         try:
             if 'image' in request.FILES:
-                image_file = request.FILES['image']
-                instance.image = image_file  # S3Boto3Storage otomatik olarak işler
+                instance.image = request.FILES['image']
+            serializer.save()
+            if 'metinler' in request.data:
+                metinler_ids = request.data.getlist('metinler')
+                instance.metinler.set(metinler_ids)
         except Exception as e:
-            raise ValidationError(f"Dosya yükleme hatası: {str(e)}")
-
-        serializer.save()
+            raise ValidationError(f"Güncelleme hatası: {str(e)}")
         return Response(serializer.data)
 
 class MüəllimlərViewSet(viewsets.ModelViewSet):
