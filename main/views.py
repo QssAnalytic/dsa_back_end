@@ -1,12 +1,12 @@
-# views.py (Düzeltildi)
+from django.views.decorators.cache import cache_control
 from .models import (
-    Müraciət, Əlaqə, Qeydiyyat, Bootcamps, BootcampTipi, Təlimlər, Mətinlər, 
+    Müraciət, Əlaqə, Qeydiyyat, Bootcamps, BootcampTipi, Təlimlər, Mətinlər,
     Sessiyalar, Nümayişlər, Sillabuslar, Təlimçilər, Müəllimlər, Məzunlar, FAQ
 )
 from .serializers import (
-    MüraciətSerializer, ƏlaqəSerializer, QeydiyyatSerializer, BootcampsSerializer, 
-    BootcampTipiSerializer, TəlimlərSerializer, MətinlərSerializer, SessiyalarSerializer, 
-    NümayişlərSerializer, SillabuslarSerializer, TəlimçilərSerializer, MüəllimlərSerializer, 
+    MüraciətSerializer, ƏlaqəSerializer, QeydiyyatSerializer, BootcampsSerializer,
+    BootcampTipiSerializer, TəlimlərSerializer, MətinlərSerializer, SessiyalarSerializer,
+    NümayişlərSerializer, SillabuslarSerializer, TəlimçilərSerializer, MüəllimlərSerializer,
     MəzunlarSerializer, FAQSerializer
 )
 from rest_framework import viewsets
@@ -56,10 +56,10 @@ class MətinlərViewSet(viewsets.ModelViewSet):
         try:
             if 'image' in request.FILES:
                 image_file = request.FILES['image']
-                instance.image = image_file  # S3Boto3Storage otomatik olarak işler
+                instance.image = image_file
             if 'certificate_image' in request.FILES:
                 cert_file = request.FILES['certificate_image']
-                instance.certificate_image = cert_file  # S3Boto3Storage otomatik olarak işler
+                instance.certificate_image = cert_file
         except Exception as e:
             raise ValidationError(f"Dosya yükleme hatası: {str(e)}")
 
@@ -82,13 +82,17 @@ class TəlimçilərViewSet(viewsets.ModelViewSet):
     queryset = Təlimçilər.objects.all()
     serializer_class = TəlimçilərSerializer
 
+    @cache_control(no_cache=True)
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
+
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         try:
             instance = serializer.save()
             if 'metinler' in request.data:
-                metinler_ids = request.data.getlist('metinler')  # Birden fazla ID için
+                metinler_ids = request.data.getlist('metinler')
                 instance.metinler.set(metinler_ids)
             if 'image' in request.FILES:
                 instance.image = request.FILES['image']
@@ -108,6 +112,8 @@ class TəlimçilərViewSet(viewsets.ModelViewSet):
             if 'metinler' in request.data:
                 metinler_ids = request.data.getlist('metinler')
                 instance.metinler.set(metinler_ids)
+            else:
+                instance.metinler.clear()
         except Exception as e:
             raise ValidationError(f"Güncelleme hatası: {str(e)}")
         return Response(serializer.data)
@@ -124,7 +130,7 @@ class MüəllimlərViewSet(viewsets.ModelViewSet):
         try:
             if 'image' in request.FILES:
                 image_file = request.FILES['image']
-                instance.image = image_file  # S3Boto3Storage otomatik olarak işler
+                instance.image = image_file
         except Exception as e:
             raise ValidationError(f"Dosya yükleme hatası: {str(e)}")
 
@@ -143,7 +149,7 @@ class MəzunlarViewSet(viewsets.ModelViewSet):
         try:
             if 'image' in request.FILES:
                 image_file = request.FILES['image']
-                instance.image = image_file  # S3Boto3Storage otomatik olarak işler
+                instance.image = image_file
         except Exception as e:
             raise ValidationError(f"Dosya yükleme hatası: {str(e)}")
 

@@ -13,7 +13,6 @@ class TəlimlərSerializer(serializers.ModelSerializer):
         fields = ['id', 'bootcamp_tipi', 'is_active', 'order', 'title', 'created_at', 'updated_at', 'money', 'metinler_ids']
 
     def get_metinler_ids(self, obj):
-        # İlişkili Mətinlər ID'lerini döndür
         return list(obj.metinler_trainings.values_list('id', flat=True))
 
     def get_money(self, obj):
@@ -66,9 +65,9 @@ class SillabuslarSerializer(serializers.ModelSerializer):
 
 class TəlimçilərSerializer(serializers.ModelSerializer):
     image = serializers.ImageField(use_url=True)
-    metinler = serializers.PrimaryKeyRelatedField(
-        many=True,
-        queryset=Mətinlər.objects.all(),
+    metinler = serializers.ListField(
+        child=serializers.IntegerField(),
+        write_only=True,
         required=False
     )
 
@@ -77,14 +76,14 @@ class TəlimçilərSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class MüəllimlərSerializer(serializers.ModelSerializer):
-    image = serializers.ImageField(use_url=True)  # S3 URL desteği
+    image = serializers.ImageField(use_url=True)
 
     class Meta:
         model = Müəllimlər
         fields = '__all__'
 
 class MəzunlarSerializer(serializers.ModelSerializer):
-    image = serializers.ImageField(use_url=True)  # S3 URL desteği
+    image = serializers.ImageField(use_url=True)
 
     class Meta:
         model = Məzunlar
