@@ -80,8 +80,8 @@ CORS_ALLOW_HEADERS = [
     "user-agent",
     "x-csrftoken",
     "x-requested-with",
+    "cache-control",
 ]
-
 # Set to True if your frontend sends cookies or authentication headers
 CORS_ALLOW_CREDENTIALS = False  # Change to True if needed
 
