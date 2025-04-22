@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from .models import (
     Müraciət, Əlaqə, Qeydiyyat, Bootcamps, BootcampTipi, Təlimlər, Mətinlər,
-    Sessiyalar, Nümayişlər, Sillabuslar, Təlimçilər, Müəllimlər, Məzunlar, FAQ
+    Sessiyalar, Nümayişlər, Sillabuslar, Təlimçilər, Müəllimlər, Məzunlar, FAQ, EmailSubscription
 )
 
 class TəlimlərSerializer(serializers.ModelSerializer):
@@ -42,6 +42,11 @@ class ƏlaqəSerializer(serializers.ModelSerializer):
     class Meta:
         model = Əlaqə
         fields = '__all__'
+        
+class EmailSubscriptionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = EmailSubscription
+        fields = ['id', 'email', 'created_at', 'updated_at']
 
 class QeydiyyatSerializer(serializers.ModelSerializer):
     class Meta:

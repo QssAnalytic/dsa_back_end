@@ -2,13 +2,13 @@ from django.views.decorators.cache import cache_control
 from django.utils.decorators import method_decorator
 from .models import (
     Müraciət, Əlaqə, Qeydiyyat, Bootcamps, BootcampTipi, Təlimlər, Mətinlər,
-    Sessiyalar, Nümayişlər, Sillabuslar, Təlimçilər, Müəllimlər, Məzunlar, FAQ
+    Sessiyalar, Nümayişlər, Sillabuslar, Təlimçilər, Müəllimlər, Məzunlar, FAQ, EmailSubscription
 )
 from .serializers import (
     MüraciətSerializer, ƏlaqəSerializer, QeydiyyatSerializer, BootcampsSerializer,
     BootcampTipiSerializer, TəlimlərSerializer, MətinlərSerializer, SessiyalarSerializer,
     NümayişlərSerializer, SillabuslarSerializer, TəlimçilərSerializer, MüəllimlərSerializer,
-    MəzunlarSerializer, FAQSerializer
+    MəzunlarSerializer, FAQSerializer, EmailSubscriptionSerializer
 )
 from rest_framework import viewsets
 from rest_framework.response import Response
@@ -44,6 +44,10 @@ class BootcampTipiViewSet(viewsets.ModelViewSet):
 class TəlimlərViewSet(viewsets.ModelViewSet):
     queryset = Təlimlər.objects.all()
     serializer_class = TəlimlərSerializer
+
+class EmailSubscriptionViewSet(viewsets.ModelViewSet):
+    queryset = EmailSubscription.objects.all()
+    serializer_class = EmailSubscriptionSerializer
 
 class MətinlərViewSet(viewsets.ModelViewSet):
     queryset = Mətinlər.objects.all().select_related('nümayislər').prefetch_related('syllabus', 'sessiyalar')

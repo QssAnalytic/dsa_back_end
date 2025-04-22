@@ -1,11 +1,12 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import MüraciətViewSet, ƏlaqəViewSet, QeydiyyatViewSet, BootcampsViewSet, BootcampTipiViewSet, TəlimlərViewSet, MətinlərViewSet, SessiyalarViewSet, NümayişlərViewSet, SillabuslarViewSet, TəlimçilərViewSet, MüəllimlərViewSet, MəzunlarViewSet,FAQViewSet
+from .views import MüraciətViewSet, ƏlaqəViewSet, QeydiyyatViewSet, BootcampsViewSet, BootcampTipiViewSet, TəlimlərViewSet, EmailSubscriptionViewSet, MətinlərViewSet, SessiyalarViewSet, NümayişlərViewSet, SillabuslarViewSet, TəlimçilərViewSet, MüəllimlərViewSet, MəzunlarViewSet,FAQViewSet
 
 # Router oluşturuluyor
 router = DefaultRouter()
 
 # ViewSet'ler burada router'a ekleniyor
+router.register(r'emailsubscription', EmailSubscriptionViewSet)
 router.register(r'muraciet', MüraciətViewSet)
 router.register(r'elaqe', ƏlaqəViewSet)
 router.register(r'qeydiyyat', QeydiyyatViewSet)
