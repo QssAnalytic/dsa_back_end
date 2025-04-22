@@ -82,7 +82,7 @@ class TəlimçilərViewSet(viewsets.ModelViewSet):
     queryset = Təlimçilər.objects.all()
     serializer_class = TəlimçilərSerializer
 
-    @cache_control(no_cache=True)
+    @method_decorator(cache_control(no_cache=True))  # Use method_decorator for class-based view
     def list(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
 
