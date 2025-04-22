@@ -1,4 +1,3 @@
-# models.py (Düzeltildi)
 from django.db import models
 from storages.backends.s3boto3 import S3Boto3Storage
 import unicodedata
@@ -159,7 +158,7 @@ class Təlimçilər(models.Model):
     info = models.TextField()
     name = models.CharField(max_length=100)
     work_location = models.CharField(max_length=100)
-    image = models.ImageField(upload_to=upload_to_trainers, storage=S3Boto3Storage())  # S3'e yönlendirildi
+    image = models.ImageField(upload_to=upload_to_trainers, storage=S3Boto3Storage())
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
