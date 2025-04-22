@@ -65,15 +65,15 @@ class SillabuslarSerializer(serializers.ModelSerializer):
 
 class TəlimçilərSerializer(serializers.ModelSerializer):
     image = serializers.ImageField(use_url=True)
-    metinler = serializers.ListField(
-        child=serializers.IntegerField(),
-        write_only=True,
-        required=False
+    metinler = serializers.PrimaryKeyRelatedField(
+        many=True,
+        queryset=Mətinlər.objects.all()
     )
 
     class Meta:
         model = Təlimçilər
         fields = '__all__'
+
 
 class MüəllimlərSerializer(serializers.ModelSerializer):
     image = serializers.ImageField(use_url=True)
