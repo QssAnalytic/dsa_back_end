@@ -83,7 +83,7 @@ class TəlimçilərViewSet(viewsets.ModelViewSet):
     queryset = Təlimçilər.objects.all()
     serializer_class = TəlimçilərSerializer
 
-    @method_decorator(cache_control(no_cache=True))  # Use method_decorator for class-based view
+    @method_decorator(cache_control(no_cache=True))
     def list(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
 
@@ -92,9 +92,9 @@ class TəlimçilərViewSet(viewsets.ModelViewSet):
         serializer.is_valid(raise_exception=True)
         try:
             instance = serializer.save()
-            if 'metinler' in request.data:
-                metinler_ids = request.data.getlist('metinler')
-                instance.metinler.set(metinler_ids)
+            if 'telimler' in request.data:
+                telimler_ids = request.data.getlist('telimler')
+                instance.telimler.set(telimler_ids)
             if 'image' in request.FILES:
                 instance.image = request.FILES['image']
                 instance.save()
@@ -110,11 +110,11 @@ class TəlimçilərViewSet(viewsets.ModelViewSet):
             if 'image' in request.FILES:
                 instance.image = request.FILES['image']
             serializer.save()
-            if 'metinler' in request.data:
-                metinler_ids = request.data.getlist('metinler')
-                instance.metinler.set(metinler_ids)
+            if 'telimler' in request.data:
+                telimler_ids = request.data.getlist('telimler')
+                instance.telimler.set(telimler_ids)
             else:
-                instance.metinler.clear()
+                instance.telimler.clear()
         except Exception as e:
             raise ValidationError(f"Güncelleme hatası: {str(e)}")
         return Response(serializer.data)
