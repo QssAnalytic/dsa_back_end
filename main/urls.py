@@ -23,4 +23,5 @@ router.register(r'faq', FAQViewSet)
 # URL'ler burada `router.urls` ile sağlanır
 urlpatterns = [
     path('api/', include(router.urls)),  # Tüm API URL'leri buradan erişilebilir
+    path('api/telimciler-debug/', TəlimçiDebugView.as_view()),
 ] 
