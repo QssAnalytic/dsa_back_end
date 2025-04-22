@@ -46,7 +46,7 @@ class TəlimlərViewSet(viewsets.ModelViewSet):
     serializer_class = TəlimlərSerializer
 
 class MətinlərViewSet(viewsets.ModelViewSet):
-    queryset = Mətinlər.objects.all().select_related('nümayislər').prefetch_related('trainers', 'syllabus', 'sessiyalar')
+    queryset = Mətinlər.objects.all().select_related('nümayislər').prefetch_related('syllabus', 'sessiyalar')
     serializer_class = MətinlərSerializer
 
     def update(self, request, *args, **kwargs):

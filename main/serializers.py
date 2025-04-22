@@ -107,6 +107,6 @@ class MətinlərSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def get_trainers(self, obj):
-        trainers = obj.trainers.all()
+        trainers = Təlimçilər.objects.filter(telimler=obj.trainings).distinct()
         unique_trainers = {trainer.name: trainer for trainer in trainers}
         return TəlimçilərSerializer(unique_trainers.values(), many=True).data
