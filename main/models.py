@@ -154,7 +154,7 @@ class Sillabuslar(models.Model):
         return self.title
 
 class Təlimçilər(models.Model):
-    metinler = models.ManyToManyField(Mətinlər, related_name='trainers')
+    telimler = models.ManyToManyField(Təlimlər, related_name='trainers')
     info = models.TextField()
     name = models.CharField(max_length=100)
     work_location = models.CharField(max_length=100)
