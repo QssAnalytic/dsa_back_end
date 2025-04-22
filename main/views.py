@@ -1,4 +1,5 @@
 from django.views.decorators.cache import cache_control
+from django.utils.decorators import method_decorator
 from .models import (
     Müraciət, Əlaqə, Qeydiyyat, Bootcamps, BootcampTipi, Təlimlər, Mətinlər,
     Sessiyalar, Nümayişlər, Sillabuslar, Təlimçilər, Müəllimlər, Məzunlar, FAQ
