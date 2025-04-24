@@ -108,10 +108,10 @@ class Mətinlər(models.Model):
     description = models.TextField()
     information = models.TextField()
     money = models.IntegerField()
-    image = models.ImageField(upload_to=upload_to_metinler, storage=S3Boto3Storage())  # S3'e yönlendirildi
+    image = models.ImageField(upload_to=upload_to_metinler, storage=S3Boto3Storage())
     for_who = models.TextField()
     certificates = models.TextField()
-    certificate_image = models.ImageField(upload_to=upload_to_certificates, storage=S3Boto3Storage())  # S3'e yönlendirildi
+    certificate_image = models.ImageField(upload_to=upload_to_certificates, storage=S3Boto3Storage())
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -178,7 +178,7 @@ class Müəllimlər(models.Model):
     name = models.CharField(max_length=100)
     work_position = models.CharField(max_length=100)
     work_location = models.CharField(max_length=100)
-    image = models.ImageField(upload_to=upload_to_trainers, storage=S3Boto3Storage())  # S3'e yönlendirildi
+    image = models.ImageField(upload_to=upload_to_trainers, storage=S3Boto3Storage())
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -189,7 +189,7 @@ class Məzunlar(models.Model):
     name = models.CharField(max_length=100)
     work_position = models.CharField(max_length=100)
     work_location = models.CharField(max_length=100)
-    image = models.ImageField(upload_to=upload_to_graduates, storage=S3Boto3Storage())  # S3'e yönlendirildi
+    image = models.ImageField(upload_to=upload_to_graduates, storage=S3Boto3Storage())
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -206,3 +206,16 @@ class FAQ(models.Model):
 
     def __str__(self):
         return self.question
+
+class SessiyaQeydiyyati(models.Model):
+    full_name = models.CharField(max_length=100)
+    email = models.EmailField()
+    phone = models.CharField(max_length=15)
+    training = models.ForeignKey("Təlimlər", on_delete=models.CASCADE, related_name='registrations', help_text="Qeydiyyatın bağlı olduğu təlim")
+    session = models.ForeignKey("Sessiyalar", on_delete=models.CASCADE, related_name='session_registrations', help_text="Qeydiyyatın bağlı olduğu sessiya")
+    event_date = models.DateField(help_text="Sessiyanın tarixi", null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.full_name} - {self.training.title} - {self.session.session_number}"

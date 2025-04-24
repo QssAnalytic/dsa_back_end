@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from .models import (
     Müraciət, Əlaqə, Qeydiyyat, Bootcamps, BootcampTipi, Təlimlər, Mətinlər,
-    Sessiyalar, Nümayişlər, Sillabuslar, Təlimçilər, Müəllimlər, Məzunlar, FAQ, EmailSubscription
+    Sessiyalar, Nümayişlər, Sillabuslar, Təlimçilər, Müəllimlər, Məzunlar, FAQ, EmailSubscription, SessiyaQeydiyyati
 )
 
 class TəlimlərSerializer(serializers.ModelSerializer):
@@ -79,7 +79,6 @@ class TəlimçilərSerializer(serializers.ModelSerializer):
         model = Təlimçilər
         fields = '__all__'
 
-
 class MüəllimlərSerializer(serializers.ModelSerializer):
     image = serializers.ImageField(use_url=True)
 
@@ -115,3 +114,8 @@ class MətinlərSerializer(serializers.ModelSerializer):
         trainers = Təlimçilər.objects.filter(telimler=obj.trainings).distinct()
         unique_trainers = {trainer.name: trainer for trainer in trainers}
         return TəlimçilərSerializer(unique_trainers.values(), many=True).data
+
+class SessiyaQeydiyyatiSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SessiyaQeydiyyati
+        fields = ['id', 'full_name', 'email', 'phone', 'training', 'session', 'event_date', 'created_at', 'updated_at']
