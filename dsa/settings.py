@@ -20,7 +20,7 @@ CSRF_TRUSTED_ORIGINS = [
     "https://dsafrontend-production.up.railway.app",  # Add your frontend domain
     "https://dsaadmin-production.up.railway.app",
     "http://localhost:5174",
-    
+    "https://new.dsa.az"
 ]
 
 # Application definition
@@ -57,6 +57,7 @@ CORS_ALLOWED_ORIGINS = [
     "https://dsaadmin-production.up.railway.app",
     "http://localhost:3000",
     "http://localhost:5174",
+    "https://new.dsa.az"
 ]
 
 # Allow specific HTTP methods for CORS requests
