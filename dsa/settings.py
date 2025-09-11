@@ -91,6 +91,8 @@ CORS_ALLOW_CREDENTIALS = False  # Change to True if needed
 # URL configuration
 ROOT_URLCONF = 'dsa.urls'
 
+SECRET_KEY = "5=o5z-&u=2!8q2grbogelvj&a^+r7(+kq#w^%3%4!lr%edjh()"
+
 # Template configuration
 TEMPLATES = [
     {

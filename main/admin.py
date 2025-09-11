@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Müraciət, Əlaqə, Qeydiyyat, Bootcamps, BootcampTipi, Təlimlər, Mətinlər, Sessiyalar, Nümayişlər, Sillabuslar, Təlimçilər, Müəllimlər, Məzunlar, FAQ
+from .models import Müraciət, Əlaqə, Qeydiyyat, Bootcamps, BootcampTipi, Təlimlər, Mətinlər, Sessiyalar, Nümayişlər, Sillabuslar, Təlimçilər, Müəllimlər, Məzunlar, FAQ, Certificate
 import unicodedata
 import re
 
@@ -106,3 +106,8 @@ admin.site.register(Sessiyalar)
 admin.site.register(Nümayişlər)
 admin.site.register(Sillabuslar)
 admin.site.register(FAQ)
+
+@admin.register(Certificate)
+class CertificateAdmin(admin.ModelAdmin):
+    list_display = ('certificate_id', 'name', 'date')
+    search_fields = ('certificate_id', 'name')

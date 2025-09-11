@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from .models import (
     Müraciət, Əlaqə, Qeydiyyat, Bootcamps, BootcampTipi, Təlimlər, Mətinlər,
-    Sessiyalar, Nümayişlər, Sillabuslar, Təlimçilər, Müəllimlər, Məzunlar, FAQ, EmailSubscription, SessiyaQeydiyyati
+    Sessiyalar, Nümayişlər, Sillabuslar, Təlimçilər, Müəllimlər, Məzunlar, FAQ, EmailSubscription, SessiyaQeydiyyati,Certificate
 )
 
 class TəlimlərSerializer(serializers.ModelSerializer):
@@ -119,3 +119,8 @@ class SessiyaQeydiyyatiSerializer(serializers.ModelSerializer):
     class Meta:
         model = SessiyaQeydiyyati
         fields = ['id', 'full_name', 'email', 'phone', 'training', 'session', 'event_date', 'created_at', 'updated_at']
+
+class CertificateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Certificate
+        fields = '__all__'

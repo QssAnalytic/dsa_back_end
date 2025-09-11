@@ -4,8 +4,9 @@ from .views import (
     MüraciətViewSet, ƏlaqəViewSet, QeydiyyatViewSet, BootcampsViewSet, BootcampTipiViewSet,
     TəlimlərViewSet, EmailSubscriptionViewSet, MətinlərViewSet, SessiyalarViewSet,
     NümayişlərViewSet, SillabuslarViewSet, TəlimçilərViewSet, MüəllimlərViewSet,
-    MəzunlarViewSet, FAQViewSet, SessiyaQeydiyyatiViewSet
+    MəzunlarViewSet, FAQViewSet, SessiyaQeydiyyatiViewSet, check_certificate
 )
+
 
 router = DefaultRouter()
 
@@ -26,6 +27,8 @@ router.register(r'mezunlar', MəzunlarViewSet)
 router.register(r'faq', FAQViewSet)
 router.register(r'sessiyaqeydiyyati', SessiyaQeydiyyatiViewSet)
 
+
 urlpatterns = [
     path('api/', include(router.urls)),
+    path('check-certificate/', check_certificate, name='check-certificate'),
 ]

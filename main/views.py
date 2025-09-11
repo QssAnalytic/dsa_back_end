@@ -2,18 +2,20 @@ from django.views.decorators.cache import cache_control
 from django.utils.decorators import method_decorator
 from .models import (
     Müraciət, Əlaqə, Qeydiyyat, Bootcamps, BootcampTipi, Təlimlər, Mətinlər,
-    Sessiyalar, Nümayişlər, Sillabuslar, Təlimçilər, Müəllimlər, Məzunlar, FAQ, EmailSubscription, SessiyaQeydiyyati
+    Sessiyalar, Nümayişlər, Sillabuslar, Təlimçilər, Müəllimlər, Məzunlar, FAQ, EmailSubscription, SessiyaQeydiyyati, Certificate
 )
 from .serializers import (
     MüraciətSerializer, ƏlaqəSerializer, QeydiyyatSerializer, BootcampsSerializer,
     BootcampTipiSerializer, TəlimlərSerializer, MətinlərSerializer, SessiyalarSerializer,
     NümayişlərSerializer, SillabuslarSerializer, TəlimçilərSerializer, MüəllimlərSerializer,
-    MəzunlarSerializer, FAQSerializer, EmailSubscriptionSerializer, SessiyaQeydiyyatiSerializer
+    MəzunlarSerializer, FAQSerializer, EmailSubscriptionSerializer, SessiyaQeydiyyatiSerializer, CertificateSerializer
 )
 from rest_framework import viewsets
 from rest_framework.response import Response
 from storages.backends.s3boto3 import S3Boto3Storage
 from rest_framework.exceptions import ValidationError
+from rest_framework.decorators import api_view
+from rest_framework import status
 
 def clean_filename(filename):
     import os
@@ -188,3 +190,16 @@ class MəzunlarViewSet(viewsets.ModelViewSet):
 class FAQViewSet(viewsets.ModelViewSet):
     queryset = FAQ.objects.all()
     serializer_class = FAQSerializer
+
+@api_view(['POST'])
+def check_certificate(request):
+    certificate_id = request.data.get('certificate_id')
+    if not certificate_id:
+        return Response({"error": "certificate_id göndərilməyib"}, status=status.HTTP_400_BAD_REQUEST)
+    
+    try:
+        cert = Certificate.objects.get(certificate_id=certificate_id)
+        serializer = CertificateSerializer(cert)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    except Certificate.DoesNotExist:
+        return Response({"error": "Certificate tapılmadı"}, status=status.HTTP_404_NOT_FOUND)

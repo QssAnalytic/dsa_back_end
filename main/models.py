@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 from storages.backends.s3boto3 import S3Boto3Storage
 import unicodedata
 import re
@@ -219,3 +220,19 @@ class SessiyaQeydiyyati(models.Model):
 
     def __str__(self):
         return f"{self.full_name} - {self.training.title} - {self.session.session_number}"
+    
+class Certificate(models.Model):
+    certificate_id = models.CharField(max_length=50, unique=True)
+    name = models.CharField(max_length=255)
+    name_en = models.CharField(max_length=255)
+    image = models.ImageField(upload_to='certificates/images/', storage=S3Boto3Storage())
+    image_en = models.ImageField(upload_to='certificates/images/', storage=S3Boto3Storage())
+    file = models.FileField(upload_to='certificates/files/', storage=S3Boto3Storage())
+    file_en = models.FileField(upload_to='certificates/files/', storage=S3Boto3Storage())
+    date = models.CharField(max_length=100)
+    date_en = models.CharField(max_length=100)
+    created_at = models.DateTimeField(null=True, blank=True)
+    updated_at = models.DateTimeField(null=True, blank=True)
+
+    def __str__(self):
+        return self.certificate_id
