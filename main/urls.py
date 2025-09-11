@@ -30,5 +30,5 @@ router.register(r'sessiyaqeydiyyati', SessiyaQeydiyyatiViewSet)
 
 urlpatterns = [
     path('api/', include(router.urls)),
-    path('check-certificate/', check_certificate, name='check-certificate'),
+    path('api/check-certificate/', check_certificate, name='check-certificate'),
 ]
