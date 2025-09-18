@@ -6,24 +6,10 @@ import dj_database_url
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '5=o5z-&u=2!8q2grbogelvj&a^+r7(+kq#w^%3%4!lr%edjh()'
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
-
-APPEND_SLASH = False
-
-SECURE_SSL_REDIRECT = True
-SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SECURE = True
-SESSION_COOKIE_HTTPONLY = True
-CSRF_COOKIE_HTTPONLY = True
-SECURE_HSTS_SECONDS = 31536000  # 1 il
-SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-SECURE_HSTS_PRELOAD = True
-SECURE_CONTENT_TYPE_NOSNIFF = True
-X_FRAME_OPTIONS = "DENY"
-
 
 # Allowed hosts for your backend
 ALLOWED_HOSTS = ['dsabackend-production-00f4.up.railway.app', '127.0.0.1']
@@ -46,7 +32,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'sslserver',
     'main',  # Your app
     'corsheaders',  # For handling CORS
     'rest_framework',  # For Django REST Framework
@@ -106,6 +91,8 @@ CORS_ALLOW_CREDENTIALS = False  # Change to True if needed
 # URL configuration
 ROOT_URLCONF = 'dsa.urls'
 
+SECRET_KEY = "5=o5z-&u=2!8q2grbogelvj&a^+r7(+kq#w^%3%4!lr%edjh()"
+
 # Template configuration
 TEMPLATES = [
     {
@@ -148,9 +135,9 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 # Superuser configuration (optional, for admin user creation)
-SUPERUSER_USERNAME = os.getenv('SUPERUSER_USERNAME')
-SUPERUSER_EMAIL = os.getenv('SUPERUSER_EMAIL')
-SUPERUSER_PASSWORD = os.getenv('SUPERUSER_PASSWORD')
+SUPERUSER_USERNAME = os.getenv('SUPERUSER_USERNAME', 'admin')
+SUPERUSER_EMAIL = os.getenv('SUPERUSER_EMAIL', 'admin@example.com')
+SUPERUSER_PASSWORD = os.getenv('SUPERUSER_PASSWORD', 'adminadmin')
 
 # Internationalization
 LANGUAGE_CODE = 'en-us'
