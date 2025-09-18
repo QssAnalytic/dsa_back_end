@@ -9,7 +9,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = '5=o5z-&u=2!8q2grbogelvj&a^+r7(+kq#w^%3%4!lr%edjh()'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
+
+APPEND_SLASH = False
 
 SECURE_SSL_REDIRECT = True
 SESSION_COOKIE_SECURE = True
