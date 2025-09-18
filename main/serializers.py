@@ -46,7 +46,7 @@ class ƏlaqəSerializer(serializers.ModelSerializer):
 class EmailSubscriptionSerializer(serializers.ModelSerializer):
     class Meta:
         model = EmailSubscription
-        fields = ['id', 'email', 'created_at', 'updated_at']
+        fields = ['id', 'email', 'program', 'created_at', 'updated_at']
 
 class QeydiyyatSerializer(serializers.ModelSerializer):
     class Meta:

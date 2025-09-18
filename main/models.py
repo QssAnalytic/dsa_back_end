@@ -3,6 +3,7 @@ from django.utils import timezone
 from storages.backends.s3boto3 import S3Boto3Storage
 import unicodedata
 import re
+from .storage_backends import MediaStorage
 
 def clean_filename(filename):
     filename = unicodedata.normalize('NFKD', filename)
@@ -168,6 +169,7 @@ class Təlimçilər(models.Model):
     
 class EmailSubscription(models.Model):
     email = models.EmailField(unique=True)
+    program = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -225,10 +227,10 @@ class Certificate(models.Model):
     certificate_id = models.CharField(max_length=50, unique=True)
     name = models.CharField(max_length=255)
     name_en = models.CharField(max_length=255)
-    image = models.ImageField(upload_to='certificates/images/', storage=S3Boto3Storage())
-    image_en = models.ImageField(upload_to='certificates/images/', storage=S3Boto3Storage())
-    file = models.FileField(upload_to='certificates/files/', storage=S3Boto3Storage())
-    file_en = models.FileField(upload_to='certificates/files/', storage=S3Boto3Storage())
+    image = models.ImageField(storage=MediaStorage())
+    image_en = models.ImageField(storage=MediaStorage())
+    file = models.FileField(storage=MediaStorage())
+    file_en = models.FileField(storage=MediaStorage())
     date = models.CharField(max_length=100)
     date_en = models.CharField(max_length=100)
     created_at = models.DateTimeField(null=True, blank=True)
