@@ -81,6 +81,7 @@ class ProgramPDFViewSet(viewsets.ModelViewSet):
     queryset = ProgramPDF.objects.all()
     serializer_class = ProgramPDFSerializer
     parser_classes = [MultiPartParser, FormParser]
+    lookup_field = 'slug'
 
 class SessiyaQeydiyyatiViewSet(viewsets.ModelViewSet):
     queryset = SessiyaQeydiyyati.objects.all()
