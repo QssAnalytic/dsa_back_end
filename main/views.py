@@ -2,20 +2,24 @@ from django.views.decorators.cache import cache_control
 from django.utils.decorators import method_decorator
 from .models import (
     Müraciət, Əlaqə, Qeydiyyat, Bootcamps, BootcampTipi, Təlimlər, Mətinlər,
-    Sessiyalar, Nümayişlər, Sillabuslar, Təlimçilər, Müəllimlər, Məzunlar, FAQ, EmailSubscription, SessiyaQeydiyyati, Certificate
+    Sessiyalar, Nümayişlər, Sillabuslar, Təlimçilər, Müəllimlər, Məzunlar, FAQ, EmailSubscription,
+    SessiyaQeydiyyati, Certificate, ProgramPDF
 )
 from .serializers import (
     MüraciətSerializer, ƏlaqəSerializer, QeydiyyatSerializer, BootcampsSerializer,
     BootcampTipiSerializer, TəlimlərSerializer, MətinlərSerializer, SessiyalarSerializer,
     NümayişlərSerializer, SillabuslarSerializer, TəlimçilərSerializer, MüəllimlərSerializer,
-    MəzunlarSerializer, FAQSerializer, EmailSubscriptionSerializer, SessiyaQeydiyyatiSerializer, CertificateSerializer
+    MəzunlarSerializer, FAQSerializer, EmailSubscriptionSerializer, SessiyaQeydiyyatiSerializer,
+    CertificateSerializer, ProgramPDFSerializer
 )
-from rest_framework import viewsets
+from rest_framework import viewsets, status
+from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.response import Response
-from storages.backends.s3boto3 import S3Boto3Storage
 from rest_framework.exceptions import ValidationError
 from rest_framework.decorators import api_view
-from rest_framework import status
+from rest_framework.generics import ListCreateAPIView
+from rest_framework.views import APIView
+
 
 def clean_filename(filename):
     import os
@@ -23,33 +27,60 @@ def clean_filename(filename):
     name, ext = os.path.splitext(filename)
     return f"{slugify(name)}{ext}"
 
+
 class MüraciətViewSet(viewsets.ModelViewSet):
     queryset = Müraciət.objects.all()
     serializer_class = MüraciətSerializer
+
 
 class ƏlaqəViewSet(viewsets.ModelViewSet):
     queryset = Əlaqə.objects.all()
     serializer_class = ƏlaqəSerializer
 
+
 class QeydiyyatViewSet(viewsets.ModelViewSet):
     queryset = Qeydiyyat.objects.all()
     serializer_class = QeydiyyatSerializer
+
 
 class BootcampsViewSet(viewsets.ModelViewSet):
     queryset = Bootcamps.objects.all().prefetch_related('bootcamp_tipi__telimler')
     serializer_class = BootcampsSerializer
 
+
 class BootcampTipiViewSet(viewsets.ModelViewSet):
     queryset = BootcampTipi.objects.all()
     serializer_class = BootcampTipiSerializer
+
 
 class TəlimlərViewSet(viewsets.ModelViewSet):
     queryset = Təlimlər.objects.all()
     serializer_class = TəlimlərSerializer
 
+
 class EmailSubscriptionViewSet(viewsets.ModelViewSet):
     queryset = EmailSubscription.objects.all()
     serializer_class = EmailSubscriptionSerializer
+
+class ProgramPDFView(APIView):
+    def get(self, request, slug):
+        try:
+            program = ProgramPDF.objects.get(slug=slug)
+            serializer = ProgramPDFSerializer(program)
+            return Response(serializer.data)
+        except ProgramPDF.DoesNotExist:
+            return Response({"error": "Program not found"}, status=status.HTTP_404_NOT_FOUND)
+
+
+class ProgramPDFListCreateView(ListCreateAPIView):
+    queryset = ProgramPDF.objects.all()
+    serializer_class = ProgramPDFSerializer
+    parser_classes = [MultiPartParser, FormParser]
+
+class ProgramPDFViewSet(viewsets.ModelViewSet):
+    queryset = ProgramPDF.objects.all()
+    serializer_class = ProgramPDFSerializer
+    parser_classes = [MultiPartParser, FormParser]
 
 class SessiyaQeydiyyatiViewSet(viewsets.ModelViewSet):
     queryset = SessiyaQeydiyyati.objects.all()
@@ -59,7 +90,6 @@ class SessiyaQeydiyyatiViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         try:
-            # Validate training and session existence
             training_id = request.data.get('training')
             session_id = request.data.get('session')
             if training_id:
@@ -74,7 +104,8 @@ class SessiyaQeydiyyatiViewSet(viewsets.ModelViewSet):
             raise ValidationError("Belirtilen sessiya tapılmadı.")
         except Exception as e:
             raise ValidationError(f"Qeydiyyat xətası: {str(e)}")
-        
+
+
 class MətinlərViewSet(viewsets.ModelViewSet):
     queryset = Mətinlər.objects.all().select_related('nümayislər').prefetch_related('syllabus', 'sessiyalar')
     serializer_class = MətinlərSerializer
@@ -86,28 +117,30 @@ class MətinlərViewSet(viewsets.ModelViewSet):
 
         try:
             if 'image' in request.FILES:
-                image_file = request.FILES['image']
-                instance.image = image_file
+                instance.image = request.FILES['image']
             if 'certificate_image' in request.FILES:
-                cert_file = request.FILES['certificate_image']
-                instance.certificate_image = cert_file
+                instance.certificate_image = request.FILES['certificate_image']
         except Exception as e:
             raise ValidationError(f"Dosya yükleme hatası: {str(e)}")
 
         serializer.save()
         return Response(serializer.data)
 
+
 class SessiyalarViewSet(viewsets.ModelViewSet):
     queryset = Sessiyalar.objects.all()
     serializer_class = SessiyalarSerializer
+
 
 class NümayişlərViewSet(viewsets.ModelViewSet):
     queryset = Nümayişlər.objects.all()
     serializer_class = NümayişlərSerializer
 
+
 class SillabuslarViewSet(viewsets.ModelViewSet):
     queryset = Sillabuslar.objects.all()
     serializer_class = SillabuslarSerializer
+
 
 class TəlimçilərViewSet(viewsets.ModelViewSet):
     queryset = Təlimçilər.objects.all()
@@ -149,6 +182,7 @@ class TəlimçilərViewSet(viewsets.ModelViewSet):
             raise ValidationError(f"Güncelleme hatası: {str(e)}")
         return Response(serializer.data)
 
+
 class MüəllimlərViewSet(viewsets.ModelViewSet):
     queryset = Müəllimlər.objects.all()
     serializer_class = MüəllimlərSerializer
@@ -160,13 +194,13 @@ class MüəllimlərViewSet(viewsets.ModelViewSet):
 
         try:
             if 'image' in request.FILES:
-                image_file = request.FILES['image']
-                instance.image = image_file
+                instance.image = request.FILES['image']
         except Exception as e:
             raise ValidationError(f"Dosya yükleme hatası: {str(e)}")
 
         serializer.save()
         return Response(serializer.data)
+
 
 class MəzunlarViewSet(viewsets.ModelViewSet):
     queryset = Məzunlar.objects.all()
@@ -179,17 +213,18 @@ class MəzunlarViewSet(viewsets.ModelViewSet):
 
         try:
             if 'image' in request.FILES:
-                image_file = request.FILES['image']
-                instance.image = image_file
+                instance.image = request.FILES['image']
         except Exception as e:
             raise ValidationError(f"Dosya yükleme hatası: {str(e)}")
 
         serializer.save()
         return Response(serializer.data)
 
+
 class FAQViewSet(viewsets.ModelViewSet):
     queryset = FAQ.objects.all()
     serializer_class = FAQSerializer
+
 
 @api_view(['POST'])
 def check_certificate(request):

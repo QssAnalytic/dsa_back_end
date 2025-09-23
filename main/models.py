@@ -175,6 +175,16 @@ class EmailSubscription(models.Model):
 
     def __str__(self):
         return self.email
+    
+class ProgramPDF(models.Model):
+    slug = models.SlugField(unique=True)
+    title = models.CharField(max_length=255)
+    pdf = models.FileField(upload_to='program_pdfs/', storage=S3Boto3Storage())
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.title
 
 class Müəllimlər(models.Model):
     info = models.TextField()

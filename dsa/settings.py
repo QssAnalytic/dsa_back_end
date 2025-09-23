@@ -24,7 +24,6 @@ CSRF_TRUSTED_ORIGINS = [
     "https://news.dsa.az"
 ]
 
-# Application definition
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -32,10 +31,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'main',  # Your app
-    'corsheaders',  # For handling CORS
-    'rest_framework',  # For Django REST Framework
-    'storages',  # AWS S3 için django-storages eklendi
+    'main',   
+    'corsheaders',  
+    'rest_framework', 
+    'storages',
+    'sslserver', 
 ]
 
 # Middleware configuration

@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from .models import (
     Müraciət, Əlaqə, Qeydiyyat, Bootcamps, BootcampTipi, Təlimlər, Mətinlər,
-    Sessiyalar, Nümayişlər, Sillabuslar, Təlimçilər, Müəllimlər, Məzunlar, FAQ, EmailSubscription, SessiyaQeydiyyati,Certificate
+    Sessiyalar, Nümayişlər, Sillabuslar, Təlimçilər, Müəllimlər, Məzunlar, FAQ, EmailSubscription, SessiyaQeydiyyati,Certificate, ProgramPDF
 )
 
 class TəlimlərSerializer(serializers.ModelSerializer):
@@ -47,6 +47,12 @@ class EmailSubscriptionSerializer(serializers.ModelSerializer):
     class Meta:
         model = EmailSubscription
         fields = ['id', 'email', 'program', 'created_at', 'updated_at']
+
+class ProgramPDFSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProgramPDF
+        fields = ['id', 'slug', 'title', 'pdf']
+
 
 class QeydiyyatSerializer(serializers.ModelSerializer):
     class Meta:
