@@ -168,7 +168,7 @@ class Təlimçilər(models.Model):
         return f'{self.name}'
     
 class EmailSubscription(models.Model):
-    email = models.EmailField(unique=True)
+    email = models.EmailField()
     program = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
