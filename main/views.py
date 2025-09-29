@@ -82,6 +82,44 @@ class ProgramPDFViewSet(viewsets.ModelViewSet):
     serializer_class = ProgramPDFSerializer
     parser_classes = [MultiPartParser, FormParser]
     lookup_field = 'slug'
+    
+    def get_object(self):
+        """
+        Override get_object to handle slug-based lookup properly
+        """
+        lookup_url_kwarg = self.lookup_url_kwarg or self.lookup_field
+        lookup_value = self.kwargs[lookup_url_kwarg]
+        
+        try:
+            return ProgramPDF.objects.get(slug=lookup_value)
+        except ProgramPDF.DoesNotExist:
+            from rest_framework.exceptions import NotFound
+            raise NotFound("No ProgramPDF matches the given query.")
+    
+    def update(self, request, *args, **kwargs):
+        """
+        Handle partial updates for ProgramPDF
+        """
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        
+        try:
+            if 'pdf' in request.FILES:
+                instance.pdf = request.FILES['pdf']
+            serializer.save()
+            return Response(serializer.data)
+        except Exception as e:
+            from rest_framework.exceptions import ValidationError
+            raise ValidationError(f"Update error: {str(e)}")
+    
+    def destroy(self, request, *args, **kwargs):
+        """
+        Handle deletion of ProgramPDF
+        """
+        instance = self.get_object()
+        instance.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 class SessiyaQeydiyyatiViewSet(viewsets.ModelViewSet):
     queryset = SessiyaQeydiyyati.objects.all()

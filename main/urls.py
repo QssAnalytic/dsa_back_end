@@ -31,5 +31,4 @@ urlpatterns = [
     path("api/", include(router.urls)),
     path("api/check-certificate/", check_certificate, name="check-certificate"),
     path("api/program/<slug:slug>/", ProgramPDFView.as_view(), name="program-detail"),
-    path("api/program/", ProgramPDFListCreateView.as_view(), name="program-list-create"),
 ]

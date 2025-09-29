@@ -49,9 +49,12 @@ class EmailSubscriptionSerializer(serializers.ModelSerializer):
         fields = ['id', 'email', 'program', 'created_at', 'updated_at']
 
 class ProgramPDFSerializer(serializers.ModelSerializer):
+    pdf = serializers.FileField(use_url=True)
+    
     class Meta:
         model = ProgramPDF
-        fields = ['id', 'slug', 'title', 'pdf']
+        fields = ['id', 'slug', 'title', 'pdf', 'created_at', 'updated_at']
+        read_only_fields = ['id', 'created_at', 'updated_at']
 
 
 class QeydiyyatSerializer(serializers.ModelSerializer):
