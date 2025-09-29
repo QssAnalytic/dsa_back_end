@@ -2,7 +2,7 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from .views import (
     MüraciətViewSet, ƏlaqəViewSet, QeydiyyatViewSet, BootcampsViewSet, BootcampTipiViewSet,
-    TəlimlərViewSet, EmailSubscriptionViewSet, ProgramPDFView, ProgramPDFListCreateView,
+    TəlimlərViewSet, EmailSubscriptionViewSet,
     SessiyaQeydiyyatiViewSet, MətinlərViewSet, SessiyalarViewSet, NümayişlərViewSet,
     SillabuslarViewSet, TəlimçilərViewSet, MüəllimlərViewSet, MəzunlarViewSet,
     FAQViewSet, check_certificate, ProgramPDFViewSet
@@ -30,5 +30,4 @@ router.register(r"faq", FAQViewSet)
 urlpatterns = [
     path("api/", include(router.urls)),
     path("api/check-certificate/", check_certificate, name="check-certificate"),
-    path("api/program/<slug:slug>/", ProgramPDFView.as_view(), name="program-detail"),
 ]

@@ -81,18 +81,36 @@ class ProgramPDFViewSet(viewsets.ModelViewSet):
     queryset = ProgramPDF.objects.all()
     serializer_class = ProgramPDFSerializer
     parser_classes = [MultiPartParser, FormParser]
-    lookup_field = 'slug'
+    
+    def get_queryset(self):
+        """
+        Return queryset for list view
+        """
+        return ProgramPDF.objects.all()
     
     def get_object(self):
         """
-        Override get_object to handle slug-based lookup properly
+        Override get_object to handle both slug and ID lookups
         """
         lookup_url_kwarg = self.lookup_url_kwarg or self.lookup_field
         lookup_value = self.kwargs[lookup_url_kwarg]
         
+        # Debug: print the lookup value
+        print(f"Looking for: {lookup_value}")
+        
         try:
-            return ProgramPDF.objects.get(slug=lookup_value)
+            # First try to get by ID (if lookup_value is numeric)
+            if lookup_value.isdigit():
+                obj = ProgramPDF.objects.get(id=lookup_value)
+                print(f"Found object by ID: {obj}")
+                return obj
+            else:
+                # Try to get by slug
+                obj = ProgramPDF.objects.get(slug=lookup_value)
+                print(f"Found object by slug: {obj}")
+                return obj
         except ProgramPDF.DoesNotExist:
+            print(f"No ProgramPDF found with lookup value: {lookup_value}")
             from rest_framework.exceptions import NotFound
             raise NotFound("No ProgramPDF matches the given query.")
     

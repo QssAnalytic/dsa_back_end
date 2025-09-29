@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Müraciət, Əlaqə, Qeydiyyat, Bootcamps, BootcampTipi, Təlimlər, Mətinlər, Sessiyalar, Nümayişlər, Sillabuslar, Təlimçilər, Müəllimlər, Məzunlar, FAQ, Certificate
+from .models import Müraciət, Əlaqə, Qeydiyyat, Bootcamps, BootcampTipi, Təlimlər, Mətinlər, Sessiyalar, Nümayişlər, Sillabuslar, Təlimçilər, Müəllimlər, Məzunlar, FAQ, Certificate, ProgramPDF
 import unicodedata
 import re
 
@@ -111,3 +111,9 @@ admin.site.register(FAQ)
 class CertificateAdmin(admin.ModelAdmin):
     list_display = ('certificate_id', 'name', 'date')
     search_fields = ('certificate_id', 'name')
+
+@admin.register(ProgramPDF)
+class ProgramPDFAdmin(admin.ModelAdmin):
+    list_display = ('id', 'slug', 'title', 'created_at')
+    search_fields = ('slug', 'title')
+    list_filter = ('created_at',)
