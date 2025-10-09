@@ -52,8 +52,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-# CORS settings
-CORS_ALLOW_ALL_ORIGINS = False  # Don't allow all origins
+CORS_ALLOW_ALL_ORIGINS = False
 CORS_ALLOWED_ORIGINS = [
     "https://dsafrontend-production.up.railway.app",
     "https://dsaadmin-production.up.railway.app",
@@ -64,7 +63,6 @@ CORS_ALLOWED_ORIGINS = [
     "https://dsa.az"
 ]
 
-# Allow specific HTTP methods for CORS requests
 CORS_ALLOW_METHODS = [
     "DELETE",
     "GET",
