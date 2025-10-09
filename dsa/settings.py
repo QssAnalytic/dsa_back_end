@@ -21,7 +21,8 @@ CSRF_TRUSTED_ORIGINS = [
     "https://dsaadmin-production.up.railway.app",
     "http://localhost:5174",
     "https://new.dsa.az",
-    "https://news.dsa.az"
+    "https://news.dsa.az",
+    "https://dsa.az"
 ]
 
 INSTALLED_APPS = [
@@ -60,6 +61,7 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:5174",
     "https://new.dsa.az",
     "https://news.dsa.az"
+    "https://dsa.az"
 ]
 
 # Allow specific HTTP methods for CORS requests
