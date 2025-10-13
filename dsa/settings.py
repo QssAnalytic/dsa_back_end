@@ -23,7 +23,6 @@ CSRF_TRUSTED_ORIGINS = [
     "https://new.dsa.az",
     "https://news.dsa.az",
     "https://dsa.az",
-    "dsa.az"
 ]
 
 INSTALLED_APPS = [
