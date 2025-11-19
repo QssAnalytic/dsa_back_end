@@ -283,6 +283,15 @@ class FAQViewSet(viewsets.ModelViewSet):
     serializer_class = FAQSerializer
 
 
+class CertificateViewSet(viewsets.ModelViewSet):
+    queryset = Certificate.objects.all().order_by('-created_at')
+    serializer_class = CertificateSerializer
+    parser_classes = [MultiPartParser, FormParser]
+
+    def perform_create(self, serializer):
+        serializer.save()
+
+
 @api_view(['POST'])
 def check_certificate(request):
     certificate_id = request.data.get('certificate_id')
