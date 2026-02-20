@@ -22,7 +22,7 @@ CSRF_TRUSTED_ORIGINS = [
     "http://localhost:5174",
     "https://new.dsa.az",
     "https://news.dsa.az",
-    "https://dsa.az"
+    "https://dsa.az",
 ]
 
 INSTALLED_APPS = [
@@ -153,7 +153,6 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 MEDIA_URL = 'https://dsa-media-img.s3.amazonaws.com/'  # S3 bucket URL'niz
 MEDIA_ROOT = ''
 
-# AWS S3 Ayarları
 AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')
 AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
 AWS_STORAGE_BUCKET_NAME = 'dsa-media-img'
@@ -161,11 +160,8 @@ AWS_S3_REGION_NAME = 'eu-north-1'
 AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com'
 AWS_DEFAULT_ACL = None
 
-# Medya dosyaları için S3'ü varsayılan depolama yapın
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
-# İsteğe bağlı: Dosyaların üzerine yazılmasını engellemek için
 AWS_S3_FILE_OVERWRITE = False
 
-# Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

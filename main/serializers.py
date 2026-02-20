@@ -130,6 +130,11 @@ class SessiyaQeydiyyatiSerializer(serializers.ModelSerializer):
         fields = ['id', 'full_name', 'email', 'phone', 'training', 'session', 'event_date', 'created_at', 'updated_at']
 
 class CertificateSerializer(serializers.ModelSerializer):
+    image = serializers.ImageField(use_url=True)
+    image_en = serializers.ImageField(use_url=True)
+    file = serializers.FileField(use_url=True)
+    file_en = serializers.FileField(use_url=True)
+
     class Meta:
         model = Certificate
         fields = '__all__'

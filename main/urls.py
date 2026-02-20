@@ -5,7 +5,7 @@ from .views import (
     TəlimlərViewSet, EmailSubscriptionViewSet,
     SessiyaQeydiyyatiViewSet, MətinlərViewSet, SessiyalarViewSet, NümayişlərViewSet,
     SillabuslarViewSet, TəlimçilərViewSet, MüəllimlərViewSet, MəzunlarViewSet,
-    FAQViewSet, check_certificate, ProgramPDFViewSet
+    FAQViewSet, check_certificate, ProgramPDFViewSet, CertificateViewSet
 )
 
 router = DefaultRouter()
@@ -26,6 +26,7 @@ router.register(r"telimciler", TəlimçilərViewSet)
 router.register(r"muellimler", MüəllimlərViewSet)
 router.register(r"mezunlar", MəzunlarViewSet)
 router.register(r"faq", FAQViewSet)
+router.register(r"certificates", CertificateViewSet, basename="certificates")
 
 urlpatterns = [
     path("api/", include(router.urls)),

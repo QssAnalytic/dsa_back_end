@@ -283,6 +283,40 @@ class FAQViewSet(viewsets.ModelViewSet):
     serializer_class = FAQSerializer
 
 
+class CertificateViewSet(viewsets.ModelViewSet):
+    queryset = Certificate.objects.all().order_by('-created_at')
+    serializer_class = CertificateSerializer
+    parser_classes = [MultiPartParser, FormParser]
+
+    def perform_create(self, serializer):
+        serializer.save()
+
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+
+        try:
+            if 'image' in request.FILES:
+                instance.image = request.FILES['image']
+            if 'image_en' in request.FILES:
+                instance.image_en = request.FILES['image_en']
+            if 'file' in request.FILES:
+                instance.file = request.FILES['file']
+            if 'file_en' in request.FILES:
+                instance.file_en = request.FILES['file_en']
+        except Exception as e:
+            raise ValidationError(f"File upload error: {str(e)}")
+
+        serializer.save()
+        return Response(serializer.data)
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        instance.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
 @api_view(['POST'])
 def check_certificate(request):
     certificate_id = request.data.get('certificate_id')
