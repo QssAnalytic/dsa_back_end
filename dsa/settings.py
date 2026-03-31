@@ -115,11 +115,7 @@ WSGI_APPLICATION = 'dsa.wsgi.application'
 DATABASES = {
     'default': dj_database_url.config(
         default=os.getenv("DATABASE_URL"),
-        conn_max_age=600,  # Keep connections alive for 10 minutes
-        options={
-            'MAX_CONNS': 10,  # Reduced for memory constraints
-            'MIN_CONNS': 2,
-        }
+        conn_max_age=600
     )
 }
 
