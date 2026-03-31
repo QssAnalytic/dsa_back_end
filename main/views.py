@@ -29,17 +29,17 @@ def clean_filename(filename):
 
 
 class MüraciətViewSet(viewsets.ModelViewSet):
-    queryset = Müraciət.objects.all()
+    queryset = Müraciət.objects.all().order_by('-created_at')
     serializer_class = MüraciətSerializer
 
 
 class ƏlaqəViewSet(viewsets.ModelViewSet):
-    queryset = Əlaqə.objects.all()
+    queryset = Əlaqə.objects.all().order_by('-created_at')
     serializer_class = ƏlaqəSerializer
 
 
 class QeydiyyatViewSet(viewsets.ModelViewSet):
-    queryset = Qeydiyyat.objects.all()
+    queryset = Qeydiyyat.objects.all().order_by('-created_at')
     serializer_class = QeydiyyatSerializer
 
 
@@ -49,17 +49,17 @@ class BootcampsViewSet(viewsets.ModelViewSet):
 
 
 class BootcampTipiViewSet(viewsets.ModelViewSet):
-    queryset = BootcampTipi.objects.all()
+    queryset = BootcampTipi.objects.all().select_related('bootcamp').prefetch_related('telimler')
     serializer_class = BootcampTipiSerializer
 
 
 class TəlimlərViewSet(viewsets.ModelViewSet):
-    queryset = Təlimlər.objects.all()
+    queryset = Təlimlər.objects.all().select_related('bootcamp_tipi').prefetch_related('metinler_trainings')
     serializer_class = TəlimlərSerializer
 
 
 class EmailSubscriptionViewSet(viewsets.ModelViewSet):
-    queryset = EmailSubscription.objects.all()
+    queryset = EmailSubscription.objects.all().order_by('-created_at')
     serializer_class = EmailSubscriptionSerializer
 
 class ProgramPDFView(APIView):
@@ -73,12 +73,12 @@ class ProgramPDFView(APIView):
 
 
 class ProgramPDFListCreateView(ListCreateAPIView):
-    queryset = ProgramPDF.objects.all()
+    queryset = ProgramPDF.objects.all().order_by('-created_at')
     serializer_class = ProgramPDFSerializer
     parser_classes = [MultiPartParser, FormParser]
 
 class ProgramPDFViewSet(viewsets.ModelViewSet):
-    queryset = ProgramPDF.objects.all()
+    queryset = ProgramPDF.objects.all().order_by('-created_at')
     serializer_class = ProgramPDFSerializer
     parser_classes = [MultiPartParser, FormParser]
     
@@ -86,7 +86,7 @@ class ProgramPDFViewSet(viewsets.ModelViewSet):
         """
         Return queryset for list view
         """
-        return ProgramPDF.objects.all()
+        return ProgramPDF.objects.all().order_by('-created_at')
     
     def get_object(self):
         """
@@ -95,22 +95,16 @@ class ProgramPDFViewSet(viewsets.ModelViewSet):
         lookup_url_kwarg = self.lookup_url_kwarg or self.lookup_field
         lookup_value = self.kwargs[lookup_url_kwarg]
         
-        # Debug: print the lookup value
-        print(f"Looking for: {lookup_value}")
-        
         try:
             # First try to get by ID (if lookup_value is numeric)
             if lookup_value.isdigit():
                 obj = ProgramPDF.objects.get(id=lookup_value)
-                print(f"Found object by ID: {obj}")
                 return obj
             else:
                 # Try to get by slug
                 obj = ProgramPDF.objects.get(slug=lookup_value)
-                print(f"Found object by slug: {obj}")
                 return obj
         except ProgramPDF.DoesNotExist:
-            print(f"No ProgramPDF found with lookup value: {lookup_value}")
             from rest_framework.exceptions import NotFound
             raise NotFound("No ProgramPDF matches the given query.")
     
@@ -140,7 +134,7 @@ class ProgramPDFViewSet(viewsets.ModelViewSet):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 class SessiyaQeydiyyatiViewSet(viewsets.ModelViewSet):
-    queryset = SessiyaQeydiyyati.objects.all()
+    queryset = SessiyaQeydiyyati.objects.all().select_related('training', 'session').order_by('-created_at')
     serializer_class = SessiyaQeydiyyatiSerializer
 
     def create(self, request, *args, **kwargs):
@@ -185,22 +179,22 @@ class MətinlərViewSet(viewsets.ModelViewSet):
 
 
 class SessiyalarViewSet(viewsets.ModelViewSet):
-    queryset = Sessiyalar.objects.all()
+    queryset = Sessiyalar.objects.all().select_related('metinler').order_by('session_number')
     serializer_class = SessiyalarSerializer
 
 
 class NümayişlərViewSet(viewsets.ModelViewSet):
-    queryset = Nümayişlər.objects.all()
+    queryset = Nümayişlər.objects.all().select_related('metinler').order_by('-created_at')
     serializer_class = NümayişlərSerializer
 
 
 class SillabuslarViewSet(viewsets.ModelViewSet):
-    queryset = Sillabuslar.objects.all()
+    queryset = Sillabuslar.objects.all().select_related('metinler').order_by('title')
     serializer_class = SillabuslarSerializer
 
 
 class TəlimçilərViewSet(viewsets.ModelViewSet):
-    queryset = Təlimçilər.objects.all()
+    queryset = Təlimçilər.objects.all().prefetch_related('telimler').order_by('name')
     serializer_class = TəlimçilərSerializer
 
     @method_decorator(cache_control(no_cache=True))
@@ -241,7 +235,7 @@ class TəlimçilərViewSet(viewsets.ModelViewSet):
 
 
 class MüəllimlərViewSet(viewsets.ModelViewSet):
-    queryset = Müəllimlər.objects.all()
+    queryset = Müəllimlər.objects.all().order_by('name')
     serializer_class = MüəllimlərSerializer
 
     def update(self, request, *args, **kwargs):
@@ -260,7 +254,7 @@ class MüəllimlərViewSet(viewsets.ModelViewSet):
 
 
 class MəzunlarViewSet(viewsets.ModelViewSet):
-    queryset = Məzunlar.objects.all()
+    queryset = Məzunlar.objects.all().order_by('name')
     serializer_class = MəzunlarSerializer
 
     def update(self, request, *args, **kwargs):
@@ -279,7 +273,7 @@ class MəzunlarViewSet(viewsets.ModelViewSet):
 
 
 class FAQViewSet(viewsets.ModelViewSet):
-    queryset = FAQ.objects.all()
+    queryset = FAQ.objects.all().order_by('question')
     serializer_class = FAQSerializer
 
 

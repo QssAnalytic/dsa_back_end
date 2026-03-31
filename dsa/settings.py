@@ -91,8 +91,6 @@ CORS_ALLOW_CREDENTIALS = False  # Change to True if needed
 # URL configuration
 ROOT_URLCONF = 'dsa.urls'
 
-SECRET_KEY = "5=o5z-&u=2!8q2grbogelvj&a^+r7(+kq#w^%3%4!lr%edjh()"
-
 # Template configuration
 TEMPLATES = [
     {
@@ -113,9 +111,16 @@ TEMPLATES = [
 # WSGI application
 WSGI_APPLICATION = 'dsa.wsgi.application'
 
-# Database configuration (using Railway's DATABASE_URL)
+# Database configuration (using Railway's DATABASE_URL) with connection pooling
 DATABASES = {
-    'default': dj_database_url.config(default=os.getenv("DATABASE_URL"))
+    'default': dj_database_url.config(
+        default=os.getenv("DATABASE_URL"),
+        conn_max_age=600,  # Keep connections alive for 10 minutes
+        options={
+            'MAX_CONNS': 10,  # Reduced for memory constraints
+            'MIN_CONNS': 2,
+        }
+    )
 }
 
 # Password validation
@@ -165,3 +170,11 @@ DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 AWS_S3_FILE_OVERWRITE = False
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Django REST Framework configuration for pagination
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 20,
+    'PAGINATE_BY_PARAM': 'page_size',
+    'MAX_PAGINATE_BY': 100,
+}

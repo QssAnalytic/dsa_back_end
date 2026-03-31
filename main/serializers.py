@@ -16,8 +16,9 @@ class TəlimlərSerializer(serializers.ModelSerializer):
         return list(obj.metinler_trainings.values_list('id', flat=True))
 
     def get_money(self, obj):
-        metinler = Mətinlər.objects.filter(trainings=obj)
-        return min(metinler.values_list('money', flat=True)) if metinler.exists() else None
+        from django.db.models import Min
+        metinler = Mətinlər.objects.filter(trainings=obj).aggregate(min_money=Min('money'))
+        return metinler['min_money']
 
 class BootcampTipiSerializer(serializers.ModelSerializer):
     telimler = TəlimlərSerializer(many=True, read_only=True)
@@ -120,9 +121,8 @@ class MətinlərSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def get_trainers(self, obj):
-        trainers = Təlimçilər.objects.filter(telimler=obj.trainings).distinct()
-        unique_trainers = {trainer.name: trainer for trainer in trainers}
-        return TəlimçilərSerializer(unique_trainers.values(), many=True).data
+        trainers = obj.trainings.trainers.all().distinct()
+        return TəlimçilərSerializer(trainers, many=True).data
 
 class SessiyaQeydiyyatiSerializer(serializers.ModelSerializer):
     class Meta:
